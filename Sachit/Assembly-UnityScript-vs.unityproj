@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>10.0.20506</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{273CF573-9642-D93F-FE7F-5BCCB94B2DBD}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace></RootNamespace>
+	<AssemblyName>Assembly-UnityScript</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
+	<BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE;UNITY_4_6_1;UNITY_4_6;UNITY_ANDROID;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_4_6_FEATURES;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;UNITY_ANDROID_API;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;DEVELOPMENT_BUILD;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_OSX</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+    <Reference Include="System.XML" />
+	<Reference Include="System.Core" />
+	<Reference Include="System.Xml.Linq" />
+	<Reference Include="UnityEngine">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\Assets\monorail\monorailAnim.js" />
+     <Compile Include="Assets\NGUI\LanguageHandling\initialSelect.js" />
+     <Compile Include="Assets\NGUI\LanguageHandling\langButtonFlagInfo.js" />
+     <Compile Include="Assets\NGUI\LanguageHandling\updatePos.js" />
+     <Compile Include="Assets\NGUI\LanguageHandling\updater.js" />
+     <Compile Include="Assets\Resources\DisableFog.js" />
+     <Compile Include="Assets\Scripts\Camera\FollowCamRR.js" />
+     <Compile Include="Assets\Scripts\Camera\camReduceRange.js" />
+     <Compile Include="Assets\Scripts\Camera\cullTestMil.js" />
+     <Compile Include="Assets\Scripts\Camera\samFollowCam.js" />
+     <Compile Include="Assets\Scripts\Languages\setLanguage.js" />
+     <Compile Include="Assets\Scripts\Level\DataVault.js" />
+     <Compile Include="Assets\Scripts\Level\ZoneTrigger.js" />
+     <Compile Include="Assets\Scripts\Level\aiVault.js" />
+     <Compile Include="Assets\Scripts\Level\initLevel.js" />
+     <Compile Include="Assets\Scripts\Level\levelBadges_icon.js" />
+     <Compile Include="Assets\Scripts\Level\loadingScreen.js" />
+     <Compile Include="Assets\Scripts\Level\loadingTips.js" />
+     <Compile Include="Assets\Scripts\Level\podiumHandler.js" />
+     <Compile Include="Assets\Scripts\Level\refHolder.js" />
+     <Compile Include="Assets\Scripts\Level\showRoster.js" />
+     <Compile Include="Assets\Scripts\Level\trackCollider.js" />
+     <Compile Include="Assets\Scripts\LevelItems\abyssGizmo.js" />
+     <Compile Include="Assets\Scripts\LevelItems\energyBarrier.js" />
+     <Compile Include="Assets\Scripts\LevelItems\gatepowerAnim.js" />
+     <Compile Include="Assets\Scripts\LevelItems\samSkybox.js" />
+     <Compile Include="Assets\Scripts\LevelItems\spawnPoint.js" />
+     <Compile Include="Assets\Scripts\LevelItems\textureFlow.js" />
+     <Compile Include="Assets\Scripts\LevelItems\turnsignAnim.js" />
+     <Compile Include="Assets\Scripts\LevelItems\variableMover.js" />
+     <Compile Include="Assets\Scripts\LevelItems\wpInit.js" />
+     <Compile Include="Assets\Scripts\Pickups\ExplodeScript.js" />
+     <Compile Include="Assets\Scripts\Pickups\backhitRegister.js" />
+     <Compile Include="Assets\Scripts\Pickups\boxObstacle.js" />
+     <Compile Include="Assets\Scripts\Pickups\explosionTrigger.js" />
+     <Compile Include="Assets\Scripts\Pickups\mineDeploy.js" />
+     <Compile Include="Assets\Scripts\Pickups\missleShoot.js" />
+     <Compile Include="Assets\Scripts\Pickups\missleWarhead.js" />
+     <Compile Include="Assets\Scripts\Pickups\payloadHandling.js" />
+     <Compile Include="Assets\Scripts\Pickups\pickupFloat.js" />
+     <Compile Include="Assets\Scripts\Pickups\pickupHandling.js" />
+     <Compile Include="Assets\Scripts\Pickups\pickupItem.js" />
+     <Compile Include="Assets\Scripts\Pickups\skyshotBeam.js" />
+     <Compile Include="Assets\Scripts\Pickups\wallDeploy.js" />
+     <Compile Include="Assets\Scripts\Player\aiAnim.js" />
+     <Compile Include="Assets\Scripts\Player\aiColl.js" />
+     <Compile Include="Assets\Scripts\Player\aiCollSpeedup.js" />
+     <Compile Include="Assets\Scripts\Player\aiControl.js" />
+     <Compile Include="Assets\Scripts\Player\aiMove.js" />
+     <Compile Include="Assets\Scripts\Player\collSpeedup.js" />
+     <Compile Include="Assets\Scripts\Player\dontPassThrough.js" />
+     <Compile Include="Assets\Scripts\Player\getInfo.js" />
+     <Compile Include="Assets\Scripts\Player\pAnim.js" />
+     <Compile Include="Assets\Scripts\Player\pColl.js" />
+     <Compile Include="Assets\Scripts\Player\pInput.js" />
+     <Compile Include="Assets\Scripts\Player\pMove.js" />
+     <Compile Include="Assets\Scripts\Player\scanner.js" />
+     <Compile Include="Assets\Scripts\Player\scannerJump.js" />
+     <Compile Include="Assets\Scripts\PlayerPrefsX.js" />
+     <Compile Include="Assets\Scripts\UI\HUD_GuiScript.js" />
+     <Compile Include="Assets\Scripts\UI\HUD_Indicator.js" />
+     <Compile Include="Assets\Scripts\UI\HUD_SingleButton.js" />
+     <Compile Include="Assets\Scripts\UI\HUD_Sprite.js" />
+     <Compile Include="Assets\Scripts\UI\HUD_juiceLoader.js" />
+     <Compile Include="Assets\Scripts\UI\_beatOK_btn.js" />
+     <Compile Include="Assets\Scripts\UI\_btnTextLang.js" />
+     <Compile Include="Assets\Scripts\UI\_setPlaneUVs.js" />
+     <Compile Include="Assets\Scripts\UI\accType_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\acc_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\back_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\continue_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\controlsMenu_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\debugMenu_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\fps.js" />
+     <Compile Include="Assets\Scripts\UI\loadscreen_NEW.js" />
+     <Compile Include="Assets\Scripts\UI\mainMenu.js" />
+     <Compile Include="Assets\Scripts\UI\mainMenu_btn_old.js" />
+     <Compile Include="Assets\Scripts\UI\mainMenu_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\music_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\pauseManager.js" />
+     <Compile Include="Assets\Scripts\UI\resume_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\retry_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\sens_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\start_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\testButton.js" />
+     <Compile Include="Assets\Scripts\UI\touch_btn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\tutFinsihCall_btn.js" />
+     <Compile Include="Assets\Scripts\UI\tut_Menubtn_scr.js" />
+     <Compile Include="Assets\Scripts\UI\tut_btn_scr.js" />
+     <Compile Include="Assets\Scripts\_buttonStuff\UI_ImageButton.js" />
+     <Compile Include="Assets\Scripts\_buttonStuff\UI_SlicedButton.js" />
+     <Compile Include="Assets\Scripts\_buttonStuff\UI_circuit_btn.js" />
+     <Compile Include="Assets\Scripts\_buttonStuff\frameGizmo.js" />
+     <Compile Include="Assets\Scripts\_fixMultiple.js" />
+     <Compile Include="Assets\Scripts\_updateMaterial.js" />
+     <Compile Include="Assets\Scripts\buttonText.js" />
+     <Compile Include="Assets\Scripts\debugMenuStates.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_BuyGame.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_appPurchaseHandler.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_botSelectHandler.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_crystals_handler.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_delayPos.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_denyButton.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_generalSwitchMenu_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_languageConfirm_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_reminder_scr.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_resAdjust.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_storeResultReset_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_storeTest.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_textPageButton.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_textPageHandler.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_textScrollHandler.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_textStatsHandler.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_textStatsPageButton.js" />
+     <Compile Include="Assets\Scripts\mainMenu\_unlockMeter.js" />
+     <Compile Include="Assets\Scripts\mainMenu\badgeNext_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\badgeOkay_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\badge_display_icon.js" />
+     <Compile Include="Assets\Scripts\mainMenu\badge_screenHandler.js" />
+     <Compile Include="Assets\Scripts\mainMenu\badgesInfo_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\badges_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\botBack_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\botBuy_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\botCancel_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\botConfirm_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\botSelect_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\botStore_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\bot_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\circuitBack_Btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\circuitNext_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\circuitSelect_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\circuitsPlacement.js" />
+     <Compile Include="Assets\Scripts\mainMenu\debugCash.js" />
+     <Compile Include="Assets\Scripts\mainMenu\demoCancel_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\demoSwitchMenu_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\easy_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\emptyBtn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\gamecenter_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\hard_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\mapBack_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\mapBuy_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\mapHoloMove.js" />
+     <Compile Include="Assets\Scripts\mainMenu\mapNext_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\mapPrev_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\mapSelect_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\map_diff_indicator.js" />
+     <Compile Include="Assets\Scripts\mainMenu\normal_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\optionsAcc_btn_scr.js" />
+     <Compile Include="Assets\Scripts\mainMenu\optionsMusic_btn_scr.js" />
+     <Compile Include="Assets\Scripts\mainMenu\optionsSens_btn_scr.js" />
+     <Compile Include="Assets\Scripts\mainMenu\optionsTouch_btn_scr.js" />
+     <Compile Include="Assets\Scripts\mainMenu\playBack_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\playDemo_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\play_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\raceTypeBack_Btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\raceTypeCircuit_Btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\raceTypeQuick_Btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\raceTypeShop_Btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\singleBtn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\skinBuy_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\skinToggle_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\storeBotBackReset_scr.js" />
+     <Compile Include="Assets\Scripts\mainMenu\storeBotBuy_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\storeBotHandler.js" />
+     <Compile Include="Assets\Scripts\mainMenu\storeBotNext_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\storeItemBuy_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\storeItemHandler.js" />
+     <Compile Include="Assets\Scripts\mainMenu\storeItemNext_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\storeMapBuy_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\storeMapHandler.js" />
+     <Compile Include="Assets\Scripts\mainMenu\storeMapNext_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\storeSkinToggle_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\store_btn.js" />
+     <Compile Include="Assets\Scripts\mainMenu\touchHandler.js" />
+     <Compile Include="Assets\Scripts\rails_Handler.js" />
+     <Compile Include="Assets\Scripts\robotStats\BotStats.js" />
+     <Compile Include="Assets\Scripts\robotStats\GlobalStats.js" />
+     <Compile Include="Assets\Scripts\robotStats\PickupRatios.js" />
+     <Compile Include="Assets\Scripts\settingsHolder.js" />
+     <Compile Include="Assets\Scripts\testFire.js" />
+     <Compile Include="Assets\Scripts\testPrefs.js" />
+     <Compile Include="Assets\Scripts\timeEnabler.js" />
+     <Compile Include="Assets\Scripts\webPlayer\showControls.js" />
+     <Compile Include="Assets\__importHelpers\__importHandler_scr.js" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Depth Cutout.shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\Language\Chinese\Arphic GKAI.txt" />
+     <None Include="Assets\NGUI\LanguageHandling\Localization File\Dutch.txt" />
+     <None Include="Assets\Shaders\3dTextDepth.shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\prototypeFont.txt" />
+     <None Include="Assets\NGUI\LanguageHandling\Localization File\Russian.txt" />
+     <None Include="Assets\RR_uiToolkit\Resources\Language\All Western\All_Western_Prototype.txt" />
+     <None Include="Assets\Shaders\rrVertLit.shader" />
+     <None Include="Assets\Scripts\Player\cTest.txt" />
+     <None Include="Assets\RR_uiToolkit\Resources\uiMenuAtlas.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Masked Colored.shader" />
+     <None Include="Assets\Assets\Maya\Tracks\All\Shaders\Alpha Blend.shader" />
+     <None Include="Assets\Assets\SkyBox\SkyboxShader.shader" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (Packed) (AlphaClip) .shader" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Premultiplied Colored (AlphaClip).shader" />
+     <None Include="Assets\Shaders\Sprite Cutout.shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\milAtlas2x.txt" />
+     <None Include="Assets\Font\fullProto\packedPrototype 1.txt" />
+     <None Include="Assets\RR_uiToolkit\Resources\prototypeFont2x.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (AlphaClip).shader" />
+     <None Include="Assets\NGUI\LanguageHandling\Localization File\Italian.txt" />
+     <None Include="Assets\Assets\Maya\Tracks\All\Shaders\Alpha Test.shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\Menu_Atlas.txt" />
+     <None Include="Assets\RR_uiToolkit\Resources\prototypeM2x.txt" />
+     <None Include="Assets\Shaders\QuadUI\2D Backface Culled.shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\prototype.txt" />
+     <None Include="Assets\Assets\Maya\Tracks\All\Shaders\Alpha Blend Late.shader" />
+     <None Include="Assets\Plugins\UIToolkit\Shaders\SamUIToolkit Alpha Enabled (Default).shader" />
+     <None Include="Assets\Assets\Maya\Tracks\All\Shaders\Alpha Emissive.shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\Menu_Atlas2x.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (Packed) (SoftClip).shader" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Premultiplied Colored (SoftClip).shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\prototype2x.txt" />
+     <None Include="Assets\RR_uiToolkit\Resources\Language\Chinese\Chinese Ya_Hei.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Premultiplied Colored.shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\uiMenuAtlas2x.txt" />
+     <None Include="Assets\Assets\Maya\Tracks\All\Shaders\Alpha Blend Speed.shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\prototypeSolo.txt" />
+     <None Include="Assets\NGUI\ReadMe - 2.5.1.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored.shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\uiTextAtlas_EN.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored Overlay.shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\menuFontP2x.txt" />
+     <None Include="Assets\Font\Hoefler text.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (Packed).shader" />
+     <None Include="Assets\Shaders\Transparent Vertex Colored.shader" />
+     <None Include="Assets\Assets\Maya\Tracks\All\Shaders\Alpha Blending.shader" />
+     <None Include="Assets\Plugins\UIToolkit\Shaders\SamUIToolkit No Alpha.shader" />
+     <None Include="Assets\Assets\Maya\Tracks\All\Shaders\Alpha Blend Shadow.shader" />
+     <None Include="Assets\RR_uiToolkit\Resources\Language\English\Modded_Prototype_EN.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Additive Colored.shader" />
+     <None Include="Assets\Documents\GALog.txt" />
+     <None Include="Assets\RR_uiToolkit\Resources\prototypeM.txt" />
+     <None Include="Assets\RR_uiToolkit\Resources\prototypeSolo2x.txt" />
+     <None Include="Assets\NGUI\LanguageHandling\Localization File\Spanish.txt" />
+     <None Include="Assets\NGUI\LanguageHandling\Localization File\German.txt" />
+     <None Include="Assets\NGUI\LanguageHandling\Localization File\French.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Depth.shader" />
+     <None Include="Assets\NGUI\LanguageHandling\Localization File\Chinese.txt" />
+     <None Include="Assets\RR_uiToolkit\Resources\elAtlas.txt" />
+     <None Include="Assets\NGUI\Resources\Shaders\Unlit - Transparent Colored (SoftClip).shader" />
+     <None Include="Assets\NGUI\LanguageHandling\German.txt" />
+     <None Include="Assets\RR_uiToolkit\Resources\menuFontP.txt" />
+     <None Include="Assets\RR_uiToolkit\Resources\Language\Chinese\APL.txt" />
+     <None Include="Assets\NGUI\LanguageHandling\Localization File\English.txt" />
+ <Reference Include="Assembly-UnityScript-firstpass">
+ <HintPath>/Volumes/KINGSTON/branch/Sachit/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UI">
+ <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/4.6.1/UnityEngine.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="P31RestKit">
+ <HintPath>/Volumes/KINGSTON/branch/Sachit/Assets/Plugins/P31RestKit.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
+      <Project>{C6145CF4-66FE-F50A-4AF3-9EF26C9F2908}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>

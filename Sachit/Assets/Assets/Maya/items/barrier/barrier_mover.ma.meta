@@ -1,0 +1,81 @@
+fileFormatVersion: 2
+guid: 3a65deb6908597b42b32dbf2b1984516
+ModelImporter:
+  fileIDToRecycleName:
+    7400000: Take 001 //// barrier_mover
+    7400002: barrier_2m //// barrier_mover
+    7400004: barrier_4m //// barrier_mover
+    7400006: barrier_6m //// barrier_mover
+    7400008: barrier_8m //// barrier_mover
+    100100000: DataTemplate __Singleton__
+  serializedVersion: 10
+  materials:
+    importMaterials: 1
+    materialName: 3
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 2
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations:
+    - name: barrier_2m
+      firstFrame: 1
+      lastFrame: 60
+      wrapMode: 2
+      loop: 1
+    - name: barrier_4m
+      firstFrame: 61
+      lastFrame: 140
+      wrapMode: 2
+      loop: 1
+    - name: barrier_6m
+      firstFrame: 141
+      lastFrame: 260
+      wrapMode: 2
+      loop: 1
+    - name: barrier_8m
+      firstFrame: 261
+      lastFrame: 420
+      wrapMode: 2
+      loop: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 3
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+      data:
+        first: 111
+        second: 605fa900
+    energyBarrier_anim:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600

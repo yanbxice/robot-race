@@ -1,0 +1,181 @@
+fileFormatVersion: 2
+guid: bfbed2e4b8980b749b0dfdd460b6eabe
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: track_electric_road_01_glow
+    4300002: track_electric_road_02
+    4300004: track_electric_road_03
+    4300006: track_electric_road_04
+    4300008: track_electric_road_05
+    4300010: track_electric_road_06
+    4300012: track_electric_road_001
+    4300014: track_electric_road_002
+    4300016: track_electric_road_003
+    4300018: track_electric_road_004
+    4300020: track_electric_road_005
+    4300022: track_electric_road_006
+    4300024: track_electric_road_007
+    4300026: track_electric_road_008
+    4300028: track_electric_road_009
+    4300030: track_electric_road_010
+    4300032: track_electric_road_011
+    4300034: track_electric_road_012
+    4300036: track_electric_road_013
+    4300038: track_electric_road_014
+    4300040: track_electric_road_015
+    4300042: track_electric_road_016
+    4300044: track_electric_road_017
+    4300046: track_electric_road_018
+    4300048: track_electric_road_019
+    4300050: track_electric_road_020
+    4300052: track_electric_road_021
+    4300054: track_electric_road_022
+    4300056: track_electric_road_023
+    4300058: track_electric_road_024
+    4300060: track_electric_road_025
+    4300062: track_electric_road_026
+    4300064: track_electric_road_027
+    4300066: track_electric_road_028
+    4300068: track_electric_road_029
+    4300070: track_electric_road_030
+    4300072: track_electric_road_031
+    4300074: track_electric_road_032
+    4300076: track_electric_road_033
+    4300078: track_electric_road_034
+    4300080: track_electric_road_035
+    4300082: track_electric_road_036
+    4300084: track_electric_road_037
+    4300086: track_electric_road_038
+    4300088: track_electric_road_039
+    4300090: track_electric_road_040
+    4300092: track_electric_road_041
+    4300094: track_electric_road_042
+    4300096: track_electric_road_043
+    4300098: track_electric_road_044
+    4300100: track_electric_road_045
+    4300102: track_electric_road_046
+    4300104: track_electric_road_047
+    4300106: track_electric_road_048
+    100100000: DataTemplate __Singleton__
+  serializedVersion: 10
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    generateAnimations: 0
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations: []
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 3
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+      data:
+        first: 111
+        second: 605fa900
+    track_electric_road_01_glow:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+      data:
+        first: 23
+        second: 68182300
+      data:
+        first: 33
+        second: a85a3200
+    track_electric_road_02:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
+      data:
+        first: 23
+        second: 64182300
+      data:
+        first: 33
+        second: a45a3200
+    track_electric_road_03:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
+      data:
+        first: 23
+        second: 6a182300
+      data:
+        first: 33
+        second: aa5a3200
+    track_electric_road_04:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+      data:
+        first: 23
+        second: 60182300
+      data:
+        first: 33
+        second: a05a3200
+    track_electric_road_05:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+      data:
+        first: 23
+        second: 66182300
+      data:
+        first: 33
+        second: a65a3200
+    track_electric_road_06:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+      data:
+        first: 23
+        second: 62182300
+      data:
+        first: 33
+        second: a25a3200

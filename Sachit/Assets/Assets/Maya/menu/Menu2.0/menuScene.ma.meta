@@ -1,0 +1,345 @@
+fileFormatVersion: 2
+guid: 0ce4a166b4e47b44b93042d39250ce74
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: Mapscreen_geo
+    4300002: mapscreen_glow_geo
+    4300004: Table_geo
+    4300006: ATM_geo
+    4300008: ATM_Screen_geo
+    4300010: Table_glow
+    4300012: Menu_Dome_geo
+    4300014: botStats_Name
+    4300016: botStats_Frame
+    4300018: botStats_Skin_1
+    4300020: botStats_Skin_2
+    4300022: botStats_Skin_3
+    4300024: botScreen2
+    4300026: botScreen3
+    4300028: botScreen4
+    4300030: botScreen5
+    4300032: botScreen6
+    4300034: botScreen7
+    4300036: botScreen8
+    4300038: botStats_StatsName_1
+    4300040: botScreen9
+    4300042: botScreen10
+    4300044: botScreen11
+    4300046: botScreen12
+    4300048: botScreen13
+    4300050: botScreen14
+    4300052: botScreen15
+    4300054: botStats_StatsName_2
+    4300056: botStats_StatsName_3
+    4300058: botScreen22
+    4300060: botScreen21
+    4300062: botScreen20
+    4300064: botScreen19
+    4300066: botScreen18
+    4300068: botScreen17
+    4300070: botScreen16
+    4300072: botStats_Statsbars_BG
+    4300074: BG_machinery_screen
+    4300076: BG_machinery_stats
+    4300078: turntable_glow_geo
+    4300080: turntable_geo
+    4300082: turntable_geo1
+    4300084: turntable_Cover
+    4300086: turntable_base
+    4300088: turntable_top_rotator_geo
+    4300090: botStats_Skin_A
+    4300092: botStats_Skin_B
+    4300094: botStats_Skin_C
+    4300096: botStats_StatA_statsName
+    4300098: botStats_StatA_statsValue_A
+    4300100: botStats_StatA_statsValue_B
+    4300102: botStats_StatA_statsValue_C
+    4300104: botStats_StatA_statsValue_D
+    4300106: botStats_StatA_statsValue_E
+    4300108: botStats_StatA_statsValue_F
+    4300110: botStats_StatA_statsValue_G
+    4300112: botStats_StatB_statsName
+    4300114: botStats_StatB_statsValue_A
+    4300116: botStats_StatB_statsValue_B
+    4300118: botStats_StatB_statsValue_C
+    4300120: botStats_StatB_statsValue_D
+    4300122: botStats_StatB_statsValue_E
+    4300124: botStats_StatB_statsValue_F
+    4300126: botStats_StatB_statsValue_G
+    4300128: botStats_StatC_statsName
+    4300130: botStats_StatC_statsValue_A
+    4300132: botStats_StatC_statsValue_B
+    4300134: botStats_StatC_statsValue_C
+    4300136: botStats_StatC_statsValue_D
+    4300138: botStats_StatC_statsValue_E
+    4300140: botStats_StatC_statsValue_F
+    4300142: botStats_StatC_statsValue_G
+    7400000: Take 001 //// menuScene
+    7400002: Map2Bots //// menuScene
+    7400004: Bots2Map //// menuScene
+    100100000: DataTemplate __Singleton__
+  serializedVersion: 10
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 2
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations:
+    - name: Map2Bots
+      firstFrame: 1
+      lastFrame: 20
+      wrapMode: 0
+      loop: 0
+    - name: Bots2Map
+      firstFrame: 21
+      lastFrame: 40
+      wrapMode: 0
+      loop: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 3
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: b2860100
+      data:
+        first: 4
+        second: 921a0600
+      data:
+        first: 111
+        second: 605fa900
+    ATM_Screen_geo:
+      data:
+        first: 1
+        second: fa860100
+      data:
+        first: 4
+        second: da1a0600
+      data:
+        first: 23
+        second: a8182300
+      data:
+        first: 33
+        second: e85a3200
+    ATM_geo:
+      data:
+        first: 1
+        second: fc860100
+      data:
+        first: 4
+        second: dc1a0600
+      data:
+        first: 23
+        second: aa182300
+      data:
+        first: 33
+        second: ea5a3200
+    BG_machinery_grp:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+    BG_machinery_screen:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
+      data:
+        first: 23
+        second: 64182300
+      data:
+        first: 33
+        second: a45a3200
+    BG_machinery_stats:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+      data:
+        first: 23
+        second: 62182300
+      data:
+        first: 33
+        second: a25a3200
+    Mapscreen_geo:
+      data:
+        first: 1
+        second: 02870100
+      data:
+        first: 4
+        second: e21a0600
+      data:
+        first: 23
+        second: ae182300
+      data:
+        first: 33
+        second: ee5a3200
+    Menu_Dome_geo:
+      data:
+        first: 1
+        second: f6860100
+      data:
+        first: 4
+        second: d61a0600
+      data:
+        first: 23
+        second: a4182300
+      data:
+        first: 33
+        second: e45a3200
+    Table_geo:
+      data:
+        first: 1
+        second: fe860100
+      data:
+        first: 4
+        second: de1a0600
+      data:
+        first: 23
+        second: ac182300
+      data:
+        first: 33
+        second: ec5a3200
+    Table_glow:
+      data:
+        first: 1
+        second: f8860100
+      data:
+        first: 4
+        second: d81a0600
+      data:
+        first: 23
+        second: a6182300
+      data:
+        first: 33
+        second: e65a3200
+    botStats_mover_grp:
+      data:
+        first: 1
+        second: 34870100
+      data:
+        first: 4
+        second: 141b0600
+    holoTable_grp:
+      data:
+        first: 1
+        second: 00870100
+      data:
+        first: 4
+        second: e01a0600
+    mapScreen_pos:
+      data:
+        first: 1
+        second: 38870100
+      data:
+        first: 4
+        second: 181b0600
+    mapscreen_glow_geo:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+      data:
+        first: 23
+        second: 6a182300
+      data:
+        first: 33
+        second: aa5a3200
+    mapscreen_grp:
+      data:
+        first: 1
+        second: 04870100
+      data:
+        first: 4
+        second: e41a0600
+    turntable_Cover:
+      data:
+        first: 1
+        second: 42870100
+      data:
+        first: 4
+        second: 221b0600
+      data:
+        first: 23
+        second: b2182300
+      data:
+        first: 33
+        second: f25a3200
+    turntable_base:
+      data:
+        first: 1
+        second: 40870100
+      data:
+        first: 4
+        second: 201b0600
+      data:
+        first: 23
+        second: b0182300
+      data:
+        first: 33
+        second: f05a3200
+    turntable_glow_geo:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+      data:
+        first: 23
+        second: 60182300
+      data:
+        first: 33
+        second: a05a3200
+    turntable_grp:
+      data:
+        first: 1
+        second: b8860100
+      data:
+        first: 4
+        second: 981a0600
+    turntable_top_rotator_geo:
+      data:
+        first: 1
+        second: 36870100
+      data:
+        first: 4
+        second: 161b0600
+      data:
+        first: 23
+        second: 98182300
+      data:
+        first: 33
+        second: d85a3200

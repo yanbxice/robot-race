@@ -1,0 +1,13 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="..\..\trunk\RR_1.06_iOS\Project\Assets\Scripts\Pickups\ExplodeScript.js">
+    <Files>
+      <File FileName="..\..\trunk\RR_1.06_iOS\Project\Assets\__importHelpers\__importHandler_scr.js" Line="1" Column="36" />
+      <File FileName="..\..\trunk\RR_1.06_iOS\Project\Assets\Scripts\Pickups\ExplodeScript.js" Line="25" Column="17" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

@@ -1,0 +1,152 @@
+fileFormatVersion: 2
+guid: 7dfc2be026b077543a86b9a36446f43c
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: pCube1
+    4300002: pCube2
+    4300004: pCube3
+    4300006: Place_1_Podium
+    4300008: Place_3_Podium
+    4300010: Place_3_Podium1
+    4300012: Place_1_Podium_GEO_HERE
+    4300014: Place_3_Podium_GEO_HERE
+    4300016: Place_3_Podium_GEO_HERE
+    4300018: meshes_RR_podium_gold_mesh
+    4300020: meshes_RR_podium_bronze_mesh
+    4300022: meshes_RR_podium_silver_mesh
+    4300024: podiumNew_track_all_podium_gold
+    4300026: track_all_podium_bronze
+    4300028: track_all_podium_silver
+    7400000: Take 001 //// podiumScene
+    7400002: idle //// podiumScene
+    100100000: DataTemplate __Singleton__
+  serializedVersion: 10
+  materials:
+    importMaterials: 1
+    materialName: 3
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 2
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations:
+    - name: idle
+      firstFrame: 1
+      lastFrame: 500
+      wrapMode: 2
+      loop: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 3
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+      data:
+        first: 111
+        second: 605fa900
+    Cam_HOME:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
+    Camera_ANCHOR:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+    Camera_Root:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+    podiumNew_track_all_podium_gold:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+      data:
+        first: 23
+        second: 64182300
+      data:
+        first: 33
+        second: a45a3200
+    podium_place1_ACHOR:
+      data:
+        first: 1
+        second: b2860100
+      data:
+        first: 4
+        second: 921a0600
+    podium_place2_ACHOR:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+    podium_place3_ACHOR:
+      data:
+        first: 1
+        second: b4860100
+      data:
+        first: 4
+        second: 941a0600
+    track_all_podium_bronze:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
+      data:
+        first: 23
+        second: 62182300
+      data:
+        first: 33
+        second: a25a3200
+    track_all_podium_silver:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+      data:
+        first: 23
+        second: 60182300
+      data:
+        first: 33
+        second: a05a3200

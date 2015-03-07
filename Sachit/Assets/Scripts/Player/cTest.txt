@@ -1,0 +1,2933 @@
+// Converted from UnityScript to C# at http://www.M2H.nl/files/js_to_c.php - by Mike Hergaarden
+// Do test the code! You usually need to change a few small bits.
+
+using UnityEngine;
+using System.Collections;
+
+public class MYCLASSNAME : MonoBehaviour {
+// ##########################################
+//
+//	Character control script for robot race
+//
+// 	Version 0.5f
+//
+//	Changes:
+//		- remove gravity and rely on downforce | added grav back in, but till in downforce dir.
+//		- remove downforce dependency on speed??? Just use max all the time?!
+//
+//	ToDo:
+//
+//		- change all arrays[] to built in Array class??
+//
+//		- Get all the DataVault stuff once and put into vars???
+//
+//		DONE - optimize hover handling: put camera pivot controls to camera script -> Maybe set an int and pass it to the cam or input  script?? (both are player specific)
+//									set conditionals up so that every condition is checked once only (e.g. rotation etc...)
+//
+//		- for touch steering, introduce gradual input over 1 sec (not directly full turnspeed)
+//
+//		DONE - for rotations.. add a bit of rotation to the object just for visual feedback
+//
+//		DONE - move character only once ... apply the rest to a system of empty gameobjects
+//			-> Create a transform construct for each character .. have 2 prefabs, one for player, one sligtly different(no cam points etc) for AI
+//			-> add the robots as prefabs into the scene, get them connected to the script (as Transform or Gameobject)
+//			-> Then perform steps on them and at the end of the move function transform them correctly
+//
+//		Lots of things still on my list .. I'll update here once I get the time ..
+//
+//		CHECK MY NOTES ON HANDLING MOVEMENT ... Add after those three:
+//			ADD WALL COLLISION AND SPEEDPLANES HANDLING
+//			ADD CHECKPOINTS/WAYPOINTS ... !!!
+//			ADD DEADZONE
+//
+//
+//
+		// one fast way of calculating distances for comparisions
+	//FIXME_VAR_TYPE sqrLen= (myTarget.position - playerTrns.position).sqrMagnitude;
+//
+//	##########################################
+FIXME_VAR_TYPE autoPilot= false;
+// #####	SETUP all needed transforms	#####
+bool  wrongDirEnable = false;
+
+Transform spawnPoint;				// the spawnpoint for the player
+Transform waypoint;				// the first waypoint ...
+
+	// HUD Button access
+HUD_SingleButton pickupHUD;							// the HUD button script ...
+HUD_SingleButton HUD_Position;						// the HUD button script ... 
+HUD_SingleButton HUD_PosOrd;							// the HUD button script ...
+HUD_SingleButton HUD_currLap;							// the HUD button script ...
+HUD_SingleButton HUD_totalLap;						// the HUD button script ...
+HUD_SingleButton HUD_Message_btn;						// the button to display wrong direction
+HUD_SingleButton HUD_Speed;							// the control for the speed display
+HUD_SingleButton HUD_Flash;							// quick flash for the UD ...
+
+private bool  speedState = false;					// is speedplane speed on? (HUD Boolean)
+
+	// pickup access and handling vars
+// pickupHandling pickupScript;		// script to handle the pickups
+private int pickupType = 0;		// initial pickup type for now set to jump
+private float nextPickup = 0.0f;	// timer for pickup activation
+
+	// scripts and transforms
+pAnim animScript;					// The animation script for the character ...		-> player_construct
+private bool  getReady = true;	// this is just to change our anim type from get ready to skateSlow (as we are now only calling pAnim when needed and not every update)
+private float slideGoal = 0;
+private int animState = 0;		// we don'T want to call skateSlow all the time, so whever we change anim away from skateslow, set to 0, else set to 1 (so that skate slow is only started once - it'S looping ...)
+										// also use for skate l/r -> 1 - skateSlow 2- skateRight 3 - skateLeft
+
+Transform charMesh;																	// iRobot_Player
+Transform charRoot;				// The root node (needed for sliding)				// player_root
+Transform charOffset;				// The node to add additional transforms to our character....	// player_offset
+Transform rayCastSender;																	// rayCastSender
+Transform playerTrns;																		// none
+
+CharacterController charController;		// let's try again to use the character controller .. but only for collisions, not for ground contact
+// private ControllerColliderHit charHit;	// the object the character Controller hits ...
+
+Transform mainCam;				// when resetting the player, we also need to reset the cam
+Transform camTrgt;
+
+Transform blobShadow;				// the blob shadow plane ...								//blobShadow
+GameObject botMesh;				// the robots center of gravity ( from bbox center)
+
+// private Vector3 prevPos;								// position store
+
+
+
+// #####	Transform Stats	#####
+FIXME_VAR_TYPE botSpeed= 32.0f;				// in m/s
+FIXME_VAR_TYPE botRotation= 120.0f;
+FIXME_VAR_TYPE botAcc= 15.0f;
+FIXME_VAR_TYPE botDec= 30.0f;
+FIXME_VAR_TYPE botSpeedpad= 45.0f;
+FIXME_VAR_TYPE botOffroad= 0.7f;
+
+FIXME_VAR_TYPE carSpeed= 35.0f;
+FIXME_VAR_TYPE carRotation= 100.0f;
+FIXME_VAR_TYPE carAcc= 20.0f;
+FIXME_VAR_TYPE carDec= 40.0f;
+FIXME_VAR_TYPE carSpeedpad= 45.0f;
+FIXME_VAR_TYPE carOffroad= 0.5f;
+
+FIXME_VAR_TYPE planeSpeed= 30.0f;
+FIXME_VAR_TYPE planeRotation= 90.0f;
+FIXME_VAR_TYPE planeAcc= 30.0f;
+FIXME_VAR_TYPE planeDec= 20.0f;
+FIXME_VAR_TYPE planeSpeedpad= 45.0f;
+FIXME_VAR_TYPE planeOffroad= 1.0f;
+
+
+// #####	SETUP movement settings	Updated by statFiles #####
+
+FIXME_VAR_TYPE gravity= -15.0f;					// in m/s²
+
+FIXME_VAR_TYPE offRoad= 0.7f;
+bool  isOffroad = false;		// are we offRoad?
+FIXME_VAR_TYPE maxSpeed= 35.0f;
+FIXME_VAR_TYPE speedPlaneSpeed= 45.0f;				// SpeedPlane Contact
+bool  speedHit = false;			// are we currently over a speedplane
+FIXME_VAR_TYPE speedPlaneTime= 4.0f;				// speedplane boost in sec.
+float speedPlaneExit;		// time at which to exit speedplane mode
+
+	// rotation and slide handling
+FIXME_VAR_TYPE rotateSpeed= 120.0f;				// Angle per second?
+FIXME_VAR_TYPE speedRotationDecrease= 0.2f;
+
+FIXME_VAR_TYPE maxSlideAngle= 90.0f;				// maximum angle we can slide off move direction	|	For the script to work, this needs to be between 0 and 180
+FIXME_VAR_TYPE fullSlideTime= 0.6f;				// time it takes at FULL side slide to reach maxAngle ...
+private FIXME_VAR_TYPE slideAngle= 0.0f;			// variable to hold the combined slide angles (to apply in later cycles ...) 
+private FIXME_VAR_TYPE slideSign= 1.0f;			// var to store the sign of the actual slide rotation
+private FIXME_VAR_TYPE slideTimer= 0.0f;			// in order to not suffer fluctuating iPhone input add a timer ...
+
+private	float rollAngle;					// the roll angle multiplier for plane mode
+
+// ################
+// ################
+// why not use DataVault ???
+private bool  planeMode = false;		// flag to check if we are in plane mode (used to run code only ONCE whenever we transform)
+private bool  normalMode = true;		// flag to check if we are in normal mode .. used to execute code only ONCE
+
+FIXME_VAR_TYPE planeRollMulti= 8.0f;						// the fraction of our steering rotation we want to roll!
+private FIXME_VAR_TYPE rollAmmount= 0;					// the initial roll angle - updates how much roll to add in plane mode ...
+FIXME_VAR_TYPE turnCharMulti= 2.0f;						// ammount to turn the model even if not sliding
+float slideRevertDampen = 0.7f;			// the multi that defines how much of the slide direction is taken back when reverting from sliding (not 100% in slide dir but like 90%)
+
+	// acceleration handling
+FIXME_VAR_TYPE accRate= 25.0f;								// in m/s²
+FIXME_VAR_TYPE decRate= 30.0f;								// in m/s²
+
+
+// #####	SETUP Hovering stuff	#####
+
+	// 	hover handling
+RaycastHit hoverRayHit;						// we're shooting a ray down to check for the ground ... this tores the hit info ...
+FIXME_VAR_TYPE hoverRayMask= 1<<8;							// the layer mask for the hover ray ..
+
+FIXME_VAR_TYPE downforce= -10.0f;								// the force pushing down at max Speed ... (wie bodenhaftung bei Auto... speed und flügel drücken runter ..)
+FIXME_VAR_TYPE maxDownforce= -60;								// maximum downforce when falling ...
+FIXME_VAR_TYPE idleDownforce= -10.0f;							// the downforce when standing ...
+FIXME_VAR_TYPE hoverDownforce= -5.0f;							// the initial downforce when we leave the ground ..
+float hoverForce = 20.0f;						// Force bigger than gravPull to enable hover in plane mode
+
+private float hoverMaxDist;					// the maximum hover distance (basically the length of the raycast check)
+
+private float hoverHitDist = 0.0f;				// store the last hit distance
+
+private float currDownforce;
+private float trgtDownforce;
+
+// +3.0f -> to be on the safe side with our speeds... for now I set the Raycast sender up 3 units above the characters feet, so 3.0f means - feet on the ground (so that gravity from one cycle to the next wont slip player through ground) AND add 0.1f for the shadow plane height
+FIXME_VAR_TYPE nHoverMaxDist= 3.25f;				// the "normal" or robot mode hover height
+FIXME_VAR_TYPE nHoverHeight= 3.1f;
+FIXME_VAR_TYPE uHoverMaxDist= 12.0f;				// the "up" or plane mode hover height
+FIXME_VAR_TYPE uHoverHeight= 11.1f;
+FIXME_VAR_TYPE dHoverMaxDist= 3.12f;				// the "down" or car mode hover height
+FIXME_VAR_TYPE transformHeightSpeed= 4.0f;			// speed with which we increase our height when transforming
+
+// ################
+// ################
+// USED???	Also nHoverHeight used?
+FIXME_VAR_TYPE transformDnTimeshift= 0.3f;			// transforming back down from plane mode starts a bit earlyer, because we don't want the animation to play ON the ground....
+FIXME_VAR_TYPE transDnMaxDelay= 1.0f;				// time we delay resetting the max dist down (char is simply falling now.. and we don't want him uncontrolled)
+float hoverMinDist = 0.1f;			// the minimum hover distance (this basically meand we're hitting the ground)
+
+	// Jump Vars ...
+FIXME_VAR_TYPE jumpSpeed= 15.0f;
+FIXME_VAR_TYPE jumpPause= 1.3f;			// time between jumps ...
+
+private bool  airborne = true;						// are we airborne ??
+private FIXME_VAR_TYPE airTime;
+private float airTimeBuffer = 0.1f;						// time buffer to add ...
+
+
+// #####	SETUP collision code	#####
+
+float skateHeight = 1.35f;						// the height of the raycast senders.
+float transHeight = 0.4f;
+private float actHeight = 1.0f;
+
+float collisionSpeedDecrease = 0.8f;			// factor to which speed decreases...
+float collisionTurnSpeed = 15.0f;				// maximum turn angle per loop per collision
+
+
+// ################
+// ################
+// USED???
+	// movement timers	Not needed on iPhone where we have no backwards driving ...
+private FIXME_VAR_TYPE lastJump= 0.0f;		// time when next jump is possible
+private FIXME_VAR_TYPE isJumping= 0;		// check if we are currently jumping ...
+private FIXME_VAR_TYPE grounded= 0;		// are we grounded??
+
+	// more acceleration handling ....
+private FIXME_VAR_TYPE targetSpeed= 0.0f;
+private FIXME_VAR_TYPE currSpeedAdd= 0.0f;
+private FIXME_VAR_TYPE currSpeed= 0.0f;
+
+	// rotation variables
+private FIXME_VAR_TYPE currRotSpeed= 120.0f;
+private FIXME_VAR_TYPE actSpeed= 0.0f;				// variable for clamping the deceleration .... maybe just use min/max speeds?
+
+
+	// The current move direction in x-z
+private FIXME_VAR_TYPE moveDirection= Vector3.zero;
+
+	// The  move speed
+private FIXME_VAR_TYPE moveSpeed= 0.0f;
+private FIXME_VAR_TYPE rotationInput= 0.0f;
+
+private FIXME_VAR_TYPE isControllable= true;
+
+
+
+	// camera location setting...
+Vector3 nCamPos = Vector3(0, 2, -3);					// the cam locations in robot mode ....
+Vector3 nCamTrgtPos = Vector3(0, 1.5f, 0);
+Vector3 uCamPos = Vector3(0, 1.1f, -2);				// the cam locations in robot mode ...
+Vector3 uCamTrgtPos = Vector3(0, 0.5f, 0);
+Vector3 dCamPos = Vector3(0, 0.9f, -1.5f);				// the cam locations in robot mode ...
+Vector3 dCamTrgtPos = Vector3(0, 0.5f, 0);
+float camTransTime = 2.0f;								// time the camera change for transforms takes ...
+
+
+// WP Vars...
+
+
+private bool  switchWp = false;						// do we switch waypoint??
+private bool  lapChange = false;					// have we changed the lap recently?
+private Transform wpAimNode;
+Vector3 wpDistPos;									// this will hold the position we use to calculate player distance to waypoint ...
+private int pRank;
+
+// Access Lap and pos buttons
+
+private float tProgress;								// the position index of the robot ...
+private int lapCount = 0;								// number of completed laps
+private float wpDist = 0.0f;							// our Distance ...
+
+int raceLaps = 3;										// how many laps the race has
+float endzone = 700.0f;								// length of zone before finishline where AI won'd accelerate extra
+private float noAiSpeedup;							// here we'll store at which distance to stop speeding up AI (end of last lap)
+
+private int lastWpIndex = -99;						// last collision waypoint index
+private float segLen;									// waypoint segment length
+private float wpSpeedup = 1;							// the current waypoints speed multiplier
+private float trackPassed = 0.0f;						// the distance traveled so far
+
+	// special occasions ..
+private bool  overAbyss = false;					// are we over an abyss
+private bool  allowHover = true;					// set if hover allowed... (abyss only when in plane mode)
+private wpAttribs wpScript;							// this will hold the current waypoint script (to reset player on next wp after drop)
+private bool  killed = false;						// if we just reset our player and need to reset our cam .. use this flag
+private float trackLen;								// length of complete track
+
+	// the ai speed multiplier
+private float aiSpeedMulti = 1.1f;
+
+	// Abyss timers ... OPTIMIZE???
+	// -> one will specify the time after hitting the abyss, how long we fall, the other will specify how long we must wait on the other side until we can continue
+private float abyssResetTime = 2.0f;					// time till reset and stop
+private float abyssStopTime = 3.5f;					// time till slow mode
+private float abyssSlowTime =	5.0f;					// time till normal operations
+private float abyssHitTime = -60.0f;					// time at which we hit the abyss
+private bool  abyssDrop = false;					// flag, so we don't contiously reset the time while over abyss ...
+private bool  abyssResetting = false;				// are we still handling our resetting ...
+
+	// robot collision speedup
+bool  backColl = false;								// were we hit from behind last loop??
+private float backCollSpeedboost = 1.2f;				// multi for hit from behind..
+
+	// add transform timer here for jumpgate handling
+// replaced with transUp time	|	float transTime;										// time we stay transformed ...
+// no timer here anymore ...	|	float transDnTime = 1.0f;
+float transUpTime = 4.0f;
+bool  hitJumpGate = false;							// since we're handling collisions in a seperate function, I'm setting a bool Value when a gate was hit, that will initialize setting the correct transformed time on entering the move function
+bool  longJump = false;								// if exiting out of hyperspace we need to know if this is on!
+
+	// wrong direction timer
+private float wrongDirReset = 3.0f;					// after 4 seconds in wrong direction reset player
+private float wrongDirDisplay = 0.3f;					// after 0.5f seconds display wrong direction
+private float wrongDirTimer = 0.0f;
+private bool  wrongDirActive = false;				
+private bool  wrongDirEngaged = false;				// I want to make sure that when going back and hitting another waypoint (thus changing dist does not directly cancel our backMovement ...)
+float wpOldDist = 0.0f;								// last loops track progress (to compare with current for wrong dir checking)
+
+	// get the weapon prefabs
+mineDeploy mineIsotope;
+mineDeploy mineBadaboom;
+missleShoot cruiseMissle;
+GameObject skyShot;
+Transform shield;
+Transform shieldHeight;
+HUD_SingleButton virusHUD;
+Animation virusAnim;
+
+
+	// warning HUD
+HUD_SingleButton skyShotWarning;
+HUD_SingleButton missleWarningL;
+HUD_SingleButton missleWarningR;
+private bool  playWarning = false;
+
+	// get the weapon sounds...
+AudioClip isotopeSound;
+AudioClip badaboomSound;
+AudioClip speedSound;
+AudioClip jumpSound;
+AudioClip transformSound;
+AudioClip explosionSound;
+AudioClip virusSound;
+
+	
+	// weapon Flags and timers
+private float shieldTimer;
+private bool  shieldEnable = false;
+private bool  shieldSet = false;
+Animation shieldAnim;
+private bool  managedEvade = false;			// did we evade missle or skyshot??
+
+	// flag for stuff to run only once ...
+private bool  mineHit;
+
+private bool  isotopeHit = false;
+private bool  badaboomHit = false;
+private bool  missleHit = false;
+private bool  skyshotWarmup = false;
+private bool  skyshotFire = false;
+private bool  skyshotHit = false;
+//FIXME_VAR_TYPE autoPilot= false;
+FIXME_VAR_TYPE hyperspace= false;
+
+	// weapon effect timer
+private float effectTimer;
+private float stopTimer;
+private float slowTimer;
+
+	// is aiming enabled?
+bool  aimEnable = false;
+Transform aimTarget;				// the current target
+bool  hasTarget = false;		// do we have a target??
+
+	// store the current waypoints aimtarget (in case we go automatic)
+Vector3 wpPos;
+
+	// get our attached getInfo script (this will be used to distribute values to other scripts ..)
+getInfo publicInfo;
+
+
+
+//
+// define all runtime generated vars here already ...
+//
+	
+	// get our time handlers ...
+private float dTime;
+private float currTime;
+		
+	// get our current input ..
+private float vertInput;
+private float horizInput;
+private	int doSlide;
+
+private Vector3 dir = Vector3.zero;							// for handling the acceleration ...
+		
+	// are we braking?
+private bool  brakesActive = false;
+	
+		
+	// turn calculation vars for autopilot
+private Vector3 wp3D;
+//private Vector2 wp2D;
+//private float wpAngle;	
+
+	// holder for the optimal offset to use, based on alt or next selection
+// NOT NEEDED FOR PLAYER
+// float bestOffset;
+// float nextWidth;
+float botOffsetTest;										// ai offset calculation Random value holder (in waypoint switch handling)
+
+	// reset point after drop
+private Transform abyssRespawn;
+
+	// rotation handling vars
+private float rotateAmmount;								// The rotation ammount from current inputs
+private float turnValue;									// this is for visual feedback when turning the character.. (but only the model)
+private float currRotation = 0.0f;							// will hold the current roatation below ..
+private float prevSlideAngle = 0.0f;						// will hold the rotation rest below
+private Vector3 rotateValue;	
+		
+	// local slide vars ...
+private float localSlideTime = fullSlideTime;				// I want the slide to be based on input slightly:	
+	
+	// acceleration handling local vars
+private float offRoadMulti = 1.0f;							// set to 1 first	
+				
+	// skyshot offset from player
+private float shotPos;
+
+	// gravity handling local vars ...
+private float gravComp;
+private float upForce;
+private float lastDownforce;
+	
+	// ranking local vars (rankSort function ...)
+private float[] vaultProgress;
+private int[] robots = new int [7];							// initialize the robot list in the order they use in DataVault.trackProgress
+private int[] ranking = new int[7];						// initialize the ranklist
+
+	// invoke repeat timers ...
+private float wrongDirInterval = 0.8f;
+private float rankSortInterval = 0.5f;
+
+	// ai settings ...
+float aiWpMulti = 1.0f;									// ai offset multiplier
+float wpTurnMulti = 1.0f;									// waypoint turn multiplier
+
+			// AI related vars ...
+		float wpMagnitude;
+		float increaseDist = 65.0f;	// this is the value at which we increase the turnrate to make the turn, including the 25m the wpPos is behind the actual waypoint
+		float slideDist =  35.0f;		// at this distance we start a slide until we are too close to the waypoint.
+		float slideExit = 28.0f;
+		float slideInput = 0.3f;		// if calculated horiz input above this, add slide
+		
+			// waypoint offset handling (AI)				
+		float aiAccurracy = 1;		// how accurate is the AI with setting their waypoint? 0 is full accuracy, 1 is up to 0.5f * segWidth off, depending on random value
+		float wpClamp = 0.5f;
+		
+		
+					// TEMP
+		bool  checkTransforms = true;
+		bool  hasAction= true;				// might be an int that is increased with each event ... decreased with each event closing
+
+
+Transform shieldHeightVis;
+Transform ccHeightVis;
+
+//	##################################################
+//
+//	Start Function Code...
+//
+//
+
+	// get spread for AI
+void  getSpread (){
+				// calculate the spread of the other bots (so they don't clamp together (will still be influenced by accurracy))
+			// publicInfo.botSpread
+		
+			botOffsetTest = Random.value;
+			
+				// get a random value between 0 and 1. Then add the bot offset and make sure it wraps around if above 1 ...
+				//	... then subtracht 0.5f (so we get values between -0.5f and 0.5f) and multiply by 1.5f so that we can use 75% of track width.
+			publicInfo.botSpread[0] = (Mathf.Repeat((0.165f + botOffsetTest), 1) - 0.5f) * 1.5f;
+			publicInfo.botSpread[1] = (Mathf.Repeat((0.33f + botOffsetTest), 1) - 0.5f) * 1.5f;
+			publicInfo.botSpread[2] = (Mathf.Repeat((0.495f + botOffsetTest), 1) - 0.5f) * 1.5f;
+			publicInfo.botSpread[3] = (Mathf.Repeat((0.66f + botOffsetTest), 1) - 0.5f) * 1.5f;
+			publicInfo.botSpread[4] = (Mathf.Repeat((0.825f + botOffsetTest), 1) - 0.5f) * 1.5f;
+			publicInfo.botSpread[5] = (Mathf.Repeat((1 + botOffsetTest), 1) - 0.5f) * 1.5f;
+}
+
+
+	// handle wrong direction - to be used with invoke repeat ...
+void  checkWrongDir (){
+			// ############################
+			//
+			// Handle wrong direction
+
+	if (!wrongDirEnable)
+	{
+			// do nothing
+	}
+	else if (lapCount > 0)
+	{		// if race has started .. start checking
+		
+			// are we facing away from waypoint (not just slightly but wp is at least 2m behind us ...)
+		if (wp3D.z < -2.0f)
+		{
+				// we are moving back
+			if((wrongDirTimer + wrongDirDisplay) < currTime)
+			{
+				if(!wrongDirActive)
+				{
+					HUD_Message_btn.changeState(1);					// set wrong Dir message
+					wrongDirActive = true;
+				}
+				if(!wrongDirEngaged)
+				{
+					wrongDirEngaged = true;
+				}
+			}
+			if ((wrongDirTimer + wrongDirReset) < currTime)
+			{													// time to reset us ..
+					// store our current position
+				Vector3 resetPos = playerTrns.position;
+				
+					// get the angle to our wpDistPos
+				// Vector3 resetDirection = wpDistPos - playerTrns.position;
+				Vector3 resetDirection = waypoint.position - playerTrns.position;
+				float resetAngle = Vector3.Angle(resetDirection, playerTrns.TransformDirection(Vector3.forward));
+				
+					// align player to new direction
+				playerTrns.Rotate(0, resetAngle, 0);
+				
+					// reset Timer
+				wrongDirTimer = currTime;
+				
+					// reset Speed etc...
+				currSpeed = 0.0f;
+			}
+		}
+		else
+		{	// we are not moving backwards...
+			if(wrongDirEngaged)
+			{
+					// if we were going back and hit a new waypoint .. and now our trackpassed has changed in first loop to be bigger .. don't directly cancel wrongDir out out
+					// give one try (as in next loop the dist should still decrease)
+				wrongDirEngaged = false;
+				
+			}
+			else
+			{
+				wrongDirTimer = currTime;
+				if (wrongDirActive)
+				{								// reset wrongDir display if not needed
+					wrongDirActive = false;
+					HUD_Message_btn.changeState(2);
+				}
+			}
+		}
+	}
+}	
+
+
+	// sort bot progress function - to be used with invoke repeat ...
+void  rankSort (){
+// Time testing
+// float startTime = Time.realtimeSinceStartup;
+
+				// initialize an Array with the correct robot order, as is also used by the trackProgress array
+			robots = [0, 1, 2, 3, 4, 5, 6];									
+
+			publicInfo.trackProgress[0] = tProgress;		// visualize
+			DataVault.trackProgress[0] = tProgress;								// store the current player Progress in Data Vault
+			vaultProgress = DataVault.trackProgress;							// readout the complete progress array from vault
+			
+				// now sort the robots by distance traveled ... (last first ...)
+			System.Array.Sort(vaultProgress, robots);							// yeah!! 
+			
+				// the sorting has left us with our robot array in correct order. Since the bot with the highest trackPassed value(traveled farthest)
+				// is the first bot, the order of our bots is reversed ...
+				//
+				//	Now go through the robot array from back to front and put the robots in the correct order into the ranking array
+				
+				// store the rank of the leading robot in the correct slot (defined by robots[6], which holds the index of the leading robot)
+			ranking[robots[6]] = 0;			//if for example our player is first, and I need to look up his place, I just need to check ranking[0], for the second robot in our list it would be ranking[1] which would store the value 2 if he was in third place (0 based)
+			
+				// store second place in according robot slot etc...
+			ranking[robots[5]] = 1;
+			ranking[robots[4]] = 2;
+			ranking[robots[3]] = 3;
+			ranking[robots[2]] = 4;
+			ranking[robots[1]] = 5;
+			ranking[robots[0]] = 6;
+			
+				// now get the players rank
+			pRank = ranking[0];
+				
+				
+				// Adjust the HUD display of current position (IF it needs change)
+			if(DataVault.pRank != pRank)
+			{
+				HUD_Position.changeState(pRank + 1);								// 0 is first place ..(0 based array)
+				if (pRank < 3)
+				{ 
+					HUD_PosOrd.changeState(pRank);
+				}
+				else
+				{		// after 1st, 2nd, 3rd the ordinal is "th"
+					HUD_PosOrd.changeState(3);
+				}
+			}
+				
+				// store bot ordered array with ranks
+			DataVault.ranking = ranking;
+			
+				// store rank ordered bot array
+			DataVault.robots = robots;
+			
+				// DataVault.aiSpeedMulti = aiSpeedMulti;
+			DataVault.pRank = pRank;
+
+
+			// Write to vault for storage:
+			
+// float endTime = Time.realtimeSinceStartup;
+// float timeElapsed = (endTime-startTime);
+// Debug.Log("Avg Time: "+timeElapsed+" seconds");
+}
+
+
+void  Start (){	
+		// invoke the sorting function repeating ..
+	InvokeRepeating("rankSort", 0.1f, rankSortInterval);
+	
+		// invoke the wrong Dir function repeating ..
+	if(wrongDirEnable)
+	{
+		InvokeRepeating("checkWrongDir", 0.5f, wrongDirInterval);
+	}
+	
+		// invoke repeating for bot offset ...
+	InvokeRepeating("getSpread", 0.3f, 1.33f);
+	
+		// Get the player transform ....
+	playerTrns = transform;
+	
+		// set initial stat settings ...
+	maxSpeed = botSpeed;
+	rotateSpeed = botRotation;
+	accRate = botAcc;
+	decRate = botDec;
+	speedPlaneSpeed = botSpeedpad;
+	offRoad = botOffroad;
+	
+	DataVault.dnTrans = false;		// Reset the flags 
+	DataVault.upTrans = false;
+	DataVault.noTrans = true;
+
+		// init the character on the spawnpoint ...
+	playerTrns.position = spawnPoint.position;
+	playerTrns.rotation = spawnPoint.rotation;
+	
+	moveDirection = playerTrns.TransformDirection(Vector3.forward);
+	lastJump = 0.0f;				// get the time
+	
+		// our character controller should completely ignore the floor layer (as we're handling hover via a raycast) ..
+	Physics.IgnoreLayerCollision(10,8,true);					// this makes the Player Layer completely ignore the floor layer
+	
+	
+		// the distance is needed .. otherwise the ray stops on the first collider, even if it is the wrong layer ...
+	Physics.Raycast (rayCastSender.position, playerTrns.TransformDirection (Vector3.down), hoverRayHit, 50.0f, hoverRayMask);
+	hoverHitDist = hoverRayHit.distance;						// store the initial distance 
+	// DataVault.playerPos = playerTrns.position;					// get the initial player position
+	trgtDownforce = idleDownforce;								// initially NO Speed, NO Downforce
+
+	hoverMaxDist = nHoverMaxDist;								// set the initial hover settings...
+	
+	speedPlaneExit = -speedPlaneTime;							// we don't want to start in boost mode
+	
+	hoverRayMask = 1<<8;	
+	
+		// set the correct transform flags
+	rollAngle = 0.0f;											// the roll angle multiplier for plane mode
+	planeMode = false;
+	normalMode = true;
+
+		// set the ray senders to correct height
+	actHeight = skateHeight;		
+	
+		// set character controller height
+	charController.center.y = actHeight;
+	shieldHeight.localPosition.y = actHeight;
+
+		// set some flags for abyss handling
+	overAbyss = false;					
+	allowHover = true;			
+
+	nextPickup = 0.0f;											// init the next Pickuptimer ..		
+
+		// set initial camera Position ...
+	DataVault.camTrgtPosActual = nCamTrgtPos;					// camera target
+	
+		// set the distance for the last lap no AI speedup zone....
+	wpScript = (waypoint.GetComponent<wpAttribs>() as wpAttribs); 
+	
+		// get our aimNode at the beginning
+	//wpScript = (waypoint.GetComponent<wpAttribs>() as wpAttribs);
+	wpAimNode = wpScript.aimVector;
+
+	trackLen = wpScript.fullLen;								// get the track len from the first waypoint ...
+
+//-> getInfo
+// Why use Vault ??? DataVault.hitWpScript = wpScript;							// init the dataVaults wpscript ...
+	lastWpIndex = -99;											// as I'm checking that waypoints are not triggered twice in one pass, change the index away from first wp
+
+		// these should only be set after start ..init to some value first ...
+	segLen = wpScript.segLen;									// get the initial segLen
+	wpSpeedup = wpScript.speedAdjust;							// get the initial waypoints speed boost
+	
+//	!!!!!!
+//	Move to getinfo or DataVault ...
+//
+		// define the area where no ai speedup will be performed
+	noAiSpeedup = ((trackLen * raceLaps) - endzone);
+	DataVault.noAiSpeedup = noAiSpeedup;
+	
+	
+	// ############
+	// ############
+	//
+	//	HUD handling
+	
+		// initialize Pickup Type as none
+//-> getInfo
+	pickupHUD.changeState(pickupType);
+	
+		// initialize lap and numlaps	(GET THOSE VALUES FROM INIT)
+	HUD_Position.changeState(1);								// first position for now
+	HUD_PosOrd.changeState(0);
+	HUD_currLap.changeState(1);
+	HUD_totalLap.changeState(3);								// this should be set by init script
+	
+
+}
+
+
+	// function that handles pickup collection
+void  handlePickup (){
+				
+		// get a random value
+	float randomValue = Random.value;
+	
+	//	####################
+	//
+	//		Handle pickup distribution manually ...
+	
+		// if we are first or second ... only mines .../shield
+	// DataVault.ranking[botIndex]
+	if (pRank < 2)
+	{
+		switch (true)
+		{
+				// shield
+			case (randomValue < 0.2f):
+				
+						// set to shield
+					if(shieldEnable)
+					{
+						pickupType = 7;
+					}
+					else
+					{
+						pickupType = 5;
+					}
+				break;
+			
+				// isotope
+			case (randomValue < 0.6f):
+						// set to isotope
+					pickupType = 7;
+				break;
+			
+			case (randomValue <= 1.0f):
+						// set to badaboom if no break before
+					pickupType = 4;
+				break;
+		}
+	}
+	
+		// if we are third to 5th .. all but hyperspace and more mines than guns
+	else if (pRank < 6)
+	{
+		switch (true)
+		{
+				// shield
+			case (randomValue < 0.2f):
+				
+						// set to shield
+					if(shieldEnable)
+					{
+						pickupType = 7;
+					}
+					else
+					{
+					pickupType = 5;
+					}
+				break;
+			
+				// isotope
+			case (randomValue < 0.4f):
+						// set to isotope
+					pickupType = 7;
+				break;
+			
+				// badaboom
+			case (randomValue < 0.6f):
+						// set to badaboom
+					pickupType = 4;
+				break;
+				
+				// Virus
+			case (randomValue < 0.73f):
+						// set to Virus
+					pickupType = 1;
+				break;
+				
+				// Missle
+			case (randomValue < 0.86f):
+						// set to Missle
+					pickupType = 2;
+				break;
+				
+			case (randomValue <= 1.0f):
+						// set to skyblast if no break before
+					pickupType = 6;
+				break;
+		}
+	}
+
+		// if we are 6 or 7 .. no mines .. 
+	else
+	{
+		switch (true)
+		{
+				// shield
+			case (randomValue < 0.1f):
+				
+						// set to shield
+					if(shieldEnable)
+					{
+						pickupType = 7;
+					}
+					else
+					{
+						pickupType = 5;
+					}
+				break;
+
+				// Hyperspace
+			case (randomValue < 0.4f):
+						// set to Hyperspace
+					pickupType = 3;
+				break;
+				
+				// Virus
+			case (randomValue < 0.6f):
+						// set to Virus
+					pickupType = 1;
+				break;
+				
+				// Missle
+			case (randomValue < 0.8f):
+						// set to Missle
+					pickupType = 2;
+				break;
+			
+			case (randomValue <= 1.0f):	
+						// set to skyblast if no break before
+					pickupType = 6;
+				break;
+		}
+	}		
+
+
+		//enable aiming
+	if (pickupType == 1 || pickupType == 2 || pickupType == 6)
+	{
+		
+		aimEnable = true;
+		
+			// change HUD etc ...
+		pickupHUD.changeState(pickupType);
+	}
+	else if (pickupType == 3 || pickupType == 5)
+	{
+		
+		aimEnable = false;
+
+			
+			// execute applyPickup (Shield or Hyperspace)
+		applyPickup(currTime);
+	}
+	else
+	{
+		
+		aimEnable = false;
+		
+			// change HUD etc ...
+		pickupHUD.changeState(pickupType);
+	}
+			
+}
+
+
+void  startMissle (){
+						// deploy missle 2 m in front of player
+					FIXME_VAR_TYPE deployMissle= Instantiate(cruiseMissle, (playerTrns.position + playerTrns.TransformDirection(Vector3(0, 0, 2.0f))), playerTrns.rotation);
+
+						// if no target selected .. just move along ...
+					if(hasTarget)
+					{
+						//deployMissle.SendMessage("LockOn", aimTarget);
+						deployMissle.LockOn(aimTarget);
+					}
+						// set the next waypoint
+					//deployMissle.SendMessage("wpSet", waypoint);
+					deployMissle.wpSet(waypoint);
+					
+						// get the players waypoint offset (to remain on trajectory)
+					//deployMissle.SendMessage("getOffset", publicInfo.wpOffset);
+					deployMissle.getOffset(publicInfo.wpOffset);
+					
+						// play screen flash
+					HUD_Flash.playAnim = true;
+					
+						// shut off aiming
+					aimEnable = false;
+}
+
+
+void  startBadaboom (){
+						// play screen flash
+					HUD_Flash.playAnim = true;
+						
+						// deploy mine
+					FIXME_VAR_TYPE deployBadaboom= Instantiate(mineBadaboom, playerTrns.position, playerTrns.rotation);
+					
+						// activate mine
+					deployBadaboom.activate();
+}
+
+void  startIsotope (){
+						// play screen flash
+					HUD_Flash.playAnim = true;
+					
+						// deploy mine
+					FIXME_VAR_TYPE deployIsotope= Instantiate(mineIsotope, playerTrns.position, playerTrns.rotation);
+					
+						// activate mine
+					deployIsotope.activate();
+}
+
+
+	// function that handles pickup Usage ...
+void  applyPickup ( float currTime  ){
+		// we need a timer here as one spacebar tap fires the script 6 times ...
+	if(nextPickup <= currTime)
+	{
+		nextPickup = currTime + 1.0f;
+	
+		// DEBUG
+	//pickupType = 3;
+	
+		switch (pickupType)
+		{
+			case 0:
+				break;
+			case 1:
+				// Virus
+
+						// infect targeted player
+					if(hasTarget)
+					{
+						aimTarget.SendMessage("infection");
+					}
+						
+						// play Attack animation
+					animScript.playAttack();
+					
+						// for now run our infected loop
+					// infection();
+					
+						// shut off aiming
+					aimEnable = false;
+				break;
+				
+			case 2:
+				// Missle
+					
+						// play Attack animation
+					animScript.playAttack();
+					
+						// I want to deploy while the animation has started .. so .
+					Invoke("startMissle", 0.4f);	
+				break;
+				
+			case 3:
+				// Hyperspace
+					autoPilot = true;
+					hyperspace = true;
+						
+//-> getInfo
+						// check if we are in normal mode first ...
+					DataVault.dnTrans = false;		// Reset the flags 
+					DataVault.upTrans = true;
+					DataVault.noTrans = false;
+//-> getInfo					
+						// set the transform timer (that will trigger the transformation)	
+					DataVault.transTimer = currTime + transUpTime;			// set the transformed time ...
+					
+						// set the effect timer
+					// effectTimer = currTime + 20.0f;		// Hyperspace rund 20 sec or until we are top rank!
+					
+						// play screen flash
+					HUD_Flash.playAnim = true;
+				break;
+				
+			case 4:
+				// Badaboom
+				
+						// play Attack animation
+					animScript.playAttack();
+				
+						// I want to fire mid anim ...
+					Invoke("startBadaboom", 0.4f);
+				break;
+				
+			case 5:
+				// Shield
+					
+						// play screen flash
+					HUD_Flash.playAnim = true;
+					
+					shieldEnable = true;
+				break;
+				
+			case 6:
+				// Skyblast
+				
+						// play Attack animation
+					animScript.playAttack();
+					
+						// play screen flash
+					HUD_Flash.playAnim = true;
+					
+						// shut off aiming
+					aimEnable = false;
+					
+						// send skyblast
+					if(hasTarget)
+					{
+						aimTarget.SendMessage("skyshot");
+					}
+
+						// run skyblast locally
+					// skyshot();
+				break;
+				
+			case 7:
+				// Isotope
+				
+						// play Attack animation
+					animScript.playAttack();
+					
+						// I want to drop mid anim ...
+					Invoke("startIsotope", 0.4f);
+				break;
+		}
+	
+		//after use, reset pickup Type back to 0 and change the icon back to none ..
+		pickupType = 0;
+//-> getInfo
+		pickupHUD.changeState(pickupType);
+		
+		
+	}
+}
+
+
+
+void  infection (){
+	if (shieldEnable)
+	{
+			// shield protects
+		shieldEnable = false;
+	}
+	else
+	{
+			// start the virus procedure (no timer needed here .. plays once)
+		
+			// start HUD animation
+		virusHUD.playAnim = true;
+		
+			// start Virus anim
+		virusAnim.Play("Virus");
+		
+			// play hit sound
+		audio.clip = virusSound;
+		audio.Play ();
+	}
+}
+
+
+
+void  skyshot (){
+	if (shieldEnable)
+	{
+			// shield protects
+		shieldEnable = false;
+	}
+	else
+	{
+			// start the skyshot procedure
+		skyshotWarmup = true;
+		
+			// start the run once stuff
+		mineHit = true;
+	}
+}
+
+
+void  missleImpact (){
+	if (shieldEnable)
+	{
+		shieldEnable = false;
+	}
+	else
+	{
+			// set flag for execute once
+		mineHit = true;
+		
+			// set hit flag
+		missleHit = true;
+		
+			// play hit sound
+		audio.clip = explosionSound;
+		audio.Play ();
+	}
+}
+
+
+	// leave this in as the default action for now. If pickup collected use that ...
+void  applyJump ( float currTime  ){
+
+
+	if (isControllable)
+	{
+	
+
+		//if (controller.isGrounded - in active range ... AND we're not transformed Up or Dn)
+		if ((hoverHitDist >= hoverMinDist) && (hoverHitDist <= hoverMaxDist) && (DataVault.noTrans))
+		{
+			if ((lastJump + jumpPause) < currTime)
+			{														// check if enough time has passed to jump again
+				currDownforce = jumpSpeed;
+					// store initial JumpOffTime
+				lastJump = currTime;					// specify time for next jump
+				isJumping = 1;							// set jumping flag
+				airborne = true;
+				animScript.playJump();
+				animState = 4;		
+				
+					// play sound
+				audio.clip = jumpSound;
+				audio.Play ();
+							
+			}
+		}
+		// add to JumpSpeed for a given number of seconds if button held ....
+	}
+}
+
+// ####################################
+// ####################################
+//
+//	Move Character Code	
+	
+	
+// function moveCharacter( float dTime ,   float currTime ,   float vertInput ,   float horizInput ,   int doSlide  ) 
+void  Update (){
+
+		// Check if we are in pause mode ...
+	if(publicInfo.gameEnabled)
+	{
+	
+	
+			// get our time handlers ...
+		dTime = Time.deltaTime;									// Get the time ONCE
+		currTime = Time.time - publicInfo.pausedTime;			//subtract the time we spent in pause mode	
+		
+			// get our current input ..
+		vertInput = publicInfo.vertInput;
+		horizInput = publicInfo.horizInput;
+		doSlide = publicInfo.doSlide;
+		
+		killed = false;												// init as false
+		dir = Vector3.zero;							// for handling the acceleration ...
+		
+			// are we braking?
+		brakesActive = false;		
+			
+
+			// TEMP
+		// bool  checkTransforms = true;
+		// bool  hasAction= true;				// might be an int that is increased with each event ... decreased with each event closing
+
+//	######################################################
+//
+//	AUTO PILOT CODE
+//
+		
+				// get our hit waypoint in local space (as also needed for wrong dir, outside autopilot loop)..
+			wp3D = playerTrns.InverseTransformPoint(wpPos);					
+			
+			if(autoPilot)
+			{
+					// Set forward input
+				vertInput = 1.0f;	
+				
+					// for AI, based on the bots position, we could adjust the vertInput here
+							
+
+
+				
+					// Orient to the next Waypoint (instantly)
+		
+					//	######################################################################################
+					//
+					// Step 1: Get the wayPoint in local Player space (and as Vector2 -> only x,z position)
+
+					// get magnitude
+				wpMagnitude = wp3D.magnitude;
+				
+					// test getting an input value from the waypoint (to use in our function below) NICE AND SMOOTH!! ;)
+				horizInput = (wp3D.x / wpMagnitude) * wpTurnMulti;
+				
+					// no sliding normally
+				doSlide = 0;
+				
+					// if close enough enable slide AND angle big enough to make sense ... horizInput of 0.5f is reached if waypoint at 45 deg angle ..
+				if(wpMagnitude < (slideDist) && Mathf.Abs(horizInput) > slideInput )
+				{
+						// just before the waypoint we want to exit the slide otherwise set it...
+					if(wpMagnitude > slideExit)
+					{
+						doSlide = 1;
+					}
+				}
+				
+					// now based on the distance to the waypoint, we might need to force higher turnrates ... create a multiplier based on that..
+				if(wpMagnitude < (increaseDist))
+				{
+						// adjust the turn rate in relation to distance .. if the waypoint is close we need to increase steering, but never above 1/-1
+					horizInput = Mathf.Clamp((horizInput * (increaseDist / wpMagnitude)), -1.0f, 1.0f);
+				}
+
+					// ####################################################
+					//
+					//	Hyperspace handling ...
+					//
+				if(hyperspace)
+				{
+				
+						// set play flag for anim to true
+					HUD_Speed.playAnim = true;
+					
+						// check if we need to shut autopilot off ... (enable a timer afterwards)
+					if (pRank == 0)
+					{
+						autoPilot = false;
+						hyperspace = false;
+						HUD_Speed.playAnim = false;
+					}	
+					else
+					{
+							// extend time transformed close to the transform dn offset time
+						if (longJump)
+						{		// if in long jump extend transform timer so we can reach the next gate
+							DataVault.transTimer = currTime + transUpTime;
+						}
+						else
+						{		// otherwise make sure we transform back promptly
+							DataVault.transTimer = currTime + transformDnTimeshift + 0.1f;
+						}
+						horizInput = horizInput * 3;
+					}
+				}
+			}
+			
+// end autopilot code NEW!!! (hopefully faster)
+//
+//	END AUTO PILOT CODE
+//
+//	######################################################
+
+
+// ####################################
+// ####################################			
+// is something out of the ordinary happening?? (hit, abyss, etc...)
+			
+		if(hasAction)
+		{
+	
+			// ####################################
+			// ####################################
+			//	Missle warning ...
+			
+					// this is called by incoming missles ... sound a warning
+				if (publicInfo.missleClose)
+				{
+					if(!playWarning)
+					{
+						missleWarningL.playAnim = true;
+						missleWarningR.playAnim = true;
+						playWarning = true;
+					}
+				}
+				else
+				{
+					if(playWarning)
+					{
+						missleWarningL.playAnim = false;
+						missleWarningR.playAnim = false;
+						playWarning = false;
+					}
+				}
+		
+			// ####################################
+			// ####################################
+			//	
+			//	Shield enable ...
+			
+			if (shieldEnable)
+			{
+				if (!shieldSet)
+				{
+				
+					if(DataVault.upTrans || DataVault.dnTrans)
+					{
+						shieldHeight.localPosition.y = transHeight;
+					}
+					else
+					{
+						shieldHeight.localPosition.y = skateHeight;
+					}
+					
+						// set shield visible
+					shieldSet = true;
+					shieldTimer = currTime + 40.0f;
+					// shield.localPosition.y = 0.0f;
+					shield.localScale = Vector3(1,1,1);
+					
+						// play animations ...
+					shieldAnim.CrossFadeQueued("expand", 0.3f, QueueMode.PlayNow);	
+					shieldAnim.CrossFadeQueued("active", 0.3f, QueueMode.CompleteOthers);
+				}
+				else if (currTime > shieldTimer)
+				{
+						// set shield invisible 
+					shieldEnable = false;
+					shieldSet = false;
+					
+					shield.localScale = Vector3(0,0,0);
+				}
+				else if (currTime > shieldTimer - 0.5f)
+				{
+					// start FadeAway anim early
+					shieldAnim.CrossFade("collapse");
+				}
+				// shield.localEulerAngles.y += 3.0f;
+			}
+			else if (shieldSet)
+			{
+					// set shield invisible 
+				shieldEnable = false;
+				shieldSet = false;
+					
+				shield.localScale = Vector3(0,0,0);
+			}
+		
+			
+		//	
+		// HANDLE THOSE SPEED EXCEPTION BY CHANGING VERT INPUT HERE AND NOT TARGETSPEED BELOW!!!!!
+		//
+		//
+		
+				
+			// ####################################		
+			// ####################################
+			//	
+			//	Missle hit ...
+			
+			if (missleHit)
+			{	
+					// reduce our target speed by simply adjusting the vertInput we have ...
+				vertInput = vertInput * 0.4f;
+				
+					// execute once ..
+				if (mineHit)
+				{
+						// play hit animation
+					animScript.playHit();
+					
+						// set the missle effect timer
+					effectTimer = currTime + 4.0f;
+				
+						// reduce the actual speed
+					currSpeed = currSpeed * 0.4f;
+					
+						// turn of flag
+					mineHit = false;
+				}
+				else if (currTime > effectTimer )
+				{
+						//Start scaling up again ...
+					missleHit = false;
+				}
+				
+			}
+		
+		
+			// ####################################		
+			// ####################################
+			//	
+			//	Skyshot hit ...
+			
+				// warning time first, 2 seconds ...
+			if (skyshotWarmup)
+			{	
+				if (mineHit)
+				{
+						// set the missle effect timer
+					effectTimer = currTime + 2.0f;
+				
+						// turn of flag
+					mineHit = false;
+					
+						// add skyshot warning HUD here ...
+					skyShotWarning.playAnim = true;
+				}
+				else if (currTime > effectTimer )
+				{
+						//Start the beam
+					skyshotFire = true;
+					mineHit = true;
+					
+						// stop the warmup
+					skyshotWarmup = false;
+				}
+			}
+			if (skyshotFire)
+			{	
+				if (mineHit)
+				{
+						// set the missle effect timer
+					effectTimer = currTime + 1.5f;
+					
+						// shot fired ... turn off warning
+					skyShotWarning.playAnim = false;
+					
+						// handle evasion decision ...
+						// check if we are braking
+					if(brakesActive)
+					{
+						shotPos = 6.0f;
+						managedEvade = true;
+					}
+					else
+					{
+						shotPos = 0.0f;
+								
+							// while hit .. stand still
+						currSpeed = currSpeed * 0.0f;
+							
+							// reduce our target speed by simply adjusting the vertInput we have ...
+						vertInput = vertInput * 0.0f;
+							
+							// set anim handler to stopped ..(convert to getInfo script ...)
+						DataVault.stopped = true;
+
+							// play hit animation
+						animScript.playHit();
+													
+							// start the stopped animation
+						// NOT as I use the hitAnim animScript.playSkateSlow();
+						animState = 6;	
+						
+							// set managedEvade to off
+						managedEvade = false;
+					}
+							
+						// instantiate the ray
+					FIXME_VAR_TYPE skyshotInstance= Instantiate(skyShot, (playerTrns.TransformDirection(Vector3(0, 0, shotPos)) + playerTrns.position), playerTrns.rotation);
+							
+						// set fire message to sattelite ;)
+					skyshotInstance.SendMessage("doFire");
+					
+						// turn off run once flag
+					mineHit = false;
+				}
+				else if (currTime > effectTimer )
+				{
+						//Stop Skyshot again ...
+					skyshotFire = false;
+					
+						// runOnce flag set again
+					mineHit = true;
+					skyshotHit = true;
+				}
+				else if (managedEvade)
+				{
+						// we evaded the shot ...
+						
+						// turn off skyshot handling ...
+					skyshotFire = false;
+				}
+				else
+				{
+						// we were hit and are stuck in the freeze loop ...
+						// reduce our target speed by simply adjusting the vertInput we have ...
+					vertInput = vertInput * 0.0f;
+				}
+			}
+			if (skyshotHit)
+			{
+					// reduce our target speed by simply adjusting the vertInput we have ...
+				vertInput = vertInput * 0.4f;
+				
+				if (mineHit)
+				{
+						// set the effect timer
+					effectTimer = currTime + 2.0f;
+					
+						// set back to skate slow
+					DataVault.stopped = false;
+					animState = 0;									// so that playSkateSlow gets played next loop
+					
+						// deactivate runonce flag below in speed handling
+					mineHit = false;
+				}
+				else if (currTime > effectTimer )
+				{
+						//Stop Skyshot again ...
+					skyshotHit = false;
+				}
+			}
+		
+		
+			// ####################################		
+			// ####################################
+			//	
+			//	Isotope enable ...
+			
+			if (isotopeHit)
+			{
+					// reduce our target speed by simply adjusting the vertInput we have ...
+				vertInput = vertInput * 0.5f;
+			
+					// this is called once and reset after setting the speed ...
+				if(mineHit)
+				{
+				    currSpeed = currSpeed * 0.5f;
+					effectTimer = currTime + 4.0f;
+					audio.clip = isotopeSound;
+					audio.Play ();
+					mineHit = false;
+					
+						// play hit animation
+					animScript.playHit();
+				}
+				else if (currTime > effectTimer)
+				{
+						// shut down effect and make sure we have original scale
+					isotopeHit = false;
+					charMesh.localScale = Vector3(1.0f, 1.0f, 1.0f);
+					blobShadow.localScale =Vector3(0.2f, 0.2f, 0.2f);
+				}
+				else if (currTime > effectTimer - 0.8f)
+				{	
+						//Start scaling up again ...
+					charMesh.localScale = Vector3.MoveTowards(charMesh.localScale, Vector3(1.0f, 1.0f, 1.0f), 0.1f);
+					blobShadow.localScale = Vector3.MoveTowards(blobShadow.localScale, Vector3(0.2f, 0.2f, 0.2f), 0.02f);
+				}
+				else
+				{
+						// shrink if needed ..
+					charMesh.localScale = Vector3.MoveTowards(charMesh.localScale, Vector3(0.5f, 0.5f, 0.5f), 0.1f);
+					blobShadow.localScale = Vector3.MoveTowards(blobShadow.localScale, Vector3(0.1f, 0.1f, 0.1f), 0.02f);
+				}
+			}
+			
+		
+			
+			
+			// ####################################		
+			// ####################################
+			//	
+			//	Badaboom enable ...
+			
+			if (badaboomHit)
+			{
+					// reduce our target speed by simply adjusting the vertInput we have ...
+				vertInput = vertInput * 0.3f;
+			
+					// this is called once and reset after setting the speed ...
+				if(mineHit)
+				{
+					currSpeed = currSpeed * 0.3f;
+					effectTimer = currTime + 3.0f;
+					audio.clip = badaboomSound;
+					audio.Play ();
+					mineHit = false;
+					
+						// play hit animation
+					animScript.playHit();
+				}
+				else if (currTime > effectTimer )
+				{
+						//Start scaling up again ...
+					badaboomHit = false;
+				}
+			}
+			
+			
+					
+		
+		
+			// ####################################
+			//
+			//	Get ready handling
+			
+				//initialize playing with getReady
+			if(getReady)
+			{								// if our local bool flag is still set ...
+		//-> getInfo
+				if(!DataVault.getReady)
+				{							// but the getReady time is over ...
+					getReady = false;		// .. set false flag (so that THIS is ot run again)
+					animState = 0;			// .. and set animState to 0 so that the skateSlow is called again
+				}
+			}
+			
+			
+			// #####################################
+			//
+			//	If jumpGate was hit, extend timer ...
+			
+			if(hitJumpGate)
+			{
+					// This is the code for the long jump gates ..
+				DataVault.transTimer = currTime + transUpTime;
+				
+					// reset the flag (this should only be run ONCE when a gate was hit)
+				hitJumpGate = false;
+			}
+			
+			
+			// #####################################
+			//
+			//	Abyss reset handling
+			
+			
+			if (abyssDrop)
+			{
+					// we've been falling for 2 sec. reset player
+				if (currTime >= (abyssHitTime + abyssResetTime))
+				{
+				
+		// DEBUG			print ("reset Call" + (currTime - abyssHitTime));
+						// reset the player position ..
+					playerTrns.position = abyssRespawn.position;			// position the player correctly
+					playerTrns.rotation = abyssRespawn.rotation;
+					currSpeed = 0.0f;									// we dropped. Set our speed to 0
+					currDownforce = 0.0f;								// we were falling FAST! Reset our downforce
+					abyssDrop = false;									// reset our flag
+					abyssResetting = true;								// resetting still to do
+					
+						// set the camera correctly
+					mainCam.position = playerTrns.TransformPoint(DataVault.camReset);
+					camTrgt.position = playerTrns.TransformPoint(DataVault.camTrgtPosActual);
+					
+						// set anim handler to stopped ..
+					DataVault.stopped = true;
+					
+						// start the stopped animation
+					animScript.playSkateSlow();
+					animState = 6;										// set to call playSkateSlow next
+				}
+			}
+			
+			
+				// add blinking effect to character ....
+				
+		
+				// now setup the timers for the reset handling...
+			if (abyssResetting)
+			{
+			
+					// after set reset abyssResetting flag
+				if (currTime > (abyssHitTime + abyssSlowTime))
+				{
+					abyssResetting = false;
+				}
+					// for 5.0f sek after drop max 40% speed ...
+				else if (currTime > (abyssHitTime + abyssStopTime))
+				{	
+					vertInput = vertInput * 0.4f;					// we're in slow mode
+					DataVault.stopped = false;
+					animState = 0;									// so that playSkateSlow gets played next loop
+				}
+					// for 3.5f sel after drop no speed ...
+				else if (currTime <= (abyssHitTime + abyssStopTime))
+				{
+					vertInput = 0.0f;								// we're in stop mode
+					currSpeed = 0.0f;
+				}
+		
+			}
+			
+			//
+			//	End Abyss reset handling
+			//	#####################################
+
+		}	// End HAS ACTION LOOP ...
+	
+	
+		// ######################################
+		// ######################################			
+		// #####   HANDLE TRANSFORMATIONS   #####
+
+			// check our transform timer (only needed if in plane mode)
+		if (DataVault.upTrans)
+		{										// if it is time to transform back
+						
+			if(DataVault.transTimer <= currTime)
+			{									// if we are in plane mode ...
+				DataVault.dnTrans = false;		// Reset the flags 
+				DataVault.upTrans = false;
+				DataVault.noTrans = true;
+				
+					// set the raycast senders to correct height
+				actHeight = skateHeight;
+					
+					// set charController height instead ...
+				charController.center.y = actHeight;
+				shieldHeight.localPosition.y = actHeight;
+				
+					// in case we were in long Jump mode ..
+				longJump = false;
+			}
+		}
+
+
+			// do we even need to check our transforms ..?
+		if (checkTransforms)
+		{
+
+			// change the Camera settings ... add those into the camera script!! No need to have it for every player !!
+			//
+			//	I should be able to remove the dnHeight handling completely, as this is always the same as normal height (not the raycast senders and anims, just changing the height ..)
+			//  Also on rising up .. do I still need the Mathf stuff?
+		
+				// IN PLANE MODE ONLY ...check another timer ... to start the back transformation while we are still in the air ...
+			if ((DataVault.transTimer - transformDnTimeshift) <= currTime)
+			{																									// start backtransformation 1 sec early ....
+				if (DataVault.upTrans)
+				{																								// if we are transformed up ...
+						// do the same as in noTrans (transform back), but start early for the Plane Mode (so we don't transform back lying on the ground ....)
+					if(DataVault.stillUp)
+					{
+							// run only once as is, as the stillUp is reset at the first anim run
+						animScript.playTransBack();													// if we are still not tranformed back ... keep running the anim ...
+						animState = 0;
+						
+						audio.clip = transformSound;
+						audio.Play ();
+					}
+				}
+		
+			}
+		
+		
+				// normal transformation code ...
+			if (DataVault.noTrans)						
+			{													// we're in robot mode ...
+		//!!!!!! -> AI
+					// set the correct roll mulitplier for normal and car mode ONCE
+				if(!normalMode)
+				{						// if transformation is over and we are still in roll mode .. turn it off once!
+					rollAngle = 0.0f;
+					planeMode = false;	// reset flag
+					normalMode = true;
+					
+						// set the raycast senders to correct height
+					actHeight = skateHeight;
+					
+						// set charController height instead ...
+					charController.center.y = actHeight;
+					shieldHeight.localPosition.y = actHeight;
+					
+						// set robot stat settings ...
+					maxSpeed = botSpeed;
+					rotateSpeed = botRotation;
+					accRate = botAcc;
+					decRate = botDec;
+					speedPlaneSpeed = botSpeedpad;
+					offRoad = botOffroad;
+				}
+		
+			
+					// move the camera to normal  ..
+				if (DataVault.camPosActual.y != nCamPos.y)
+				{
+					DataVault.camPosActual = Vector3.Lerp(DataVault.camPosActual, nCamPos, camTransTime * dTime); 							// camera
+					DataVault.camTrgtPosActual = Vector3.Lerp(DataVault.camTrgtPosActual, nCamTrgtPos, camTransTime * dTime);				// camera target
+				}
+		
+					// set the max hover dist to stay in control (like grounded) ..yep! So that the maxDist doesn't drop below our character height while he is falling
+				if ((DataVault.transTimer + transDnMaxDelay) <= currTime)
+				{
+					hoverMaxDist = nHoverMaxDist;	
+				}
+		//!!!!!! -> AI			
+				if(DataVault.stillUp || DataVault.stillDn)
+				{
+						// also run only once, as the first run of playTrnsback sets the stillUp/Dn flags
+					animScript.playTransBack();													// if we are still not tranformed back ... keep running the anim ...
+					animState = 0;
+					
+					audio.clip = transformSound;
+					audio.Play ();
+							
+				}	
+			}
+			else if (DataVault.upTrans)
+			{													// we're in plane mode ...
+
+					// if we are just going into plane mode.. set the roll multiplier once
+				if(planeMode == false)
+				{
+					rollAngle = planeRollMulti;							// set the muliplier to the set value..
+					planeMode = true;									// set flag .. this should only be run once per transform
+					normalMode = false;
+					currDownforce = 0.0f; 
+					
+						// set the correct raycast sender heigths
+					actHeight = transHeight;
+						
+						// adjust char controller height
+					charController.center.y = actHeight;
+					shieldHeight.localPosition.y = actHeight;
+		
+						// init the transform up animation
+					animScript.playTransUp();		// Start animation
+					animState = 7;
+					
+						// play sound ..
+					audio.clip = transformSound;
+					audio.Play ();
+					
+						// set plane stats ...
+					maxSpeed = planeSpeed;
+					rotateSpeed = planeRotation;
+					accRate = planeAcc;
+					decRate = planeDec;
+					speedPlaneSpeed = planeSpeedpad;
+					offRoad = planeOffroad;
+				}
+				
+					// move the camera up ..
+				if (DataVault.camPosActual.y != uCamPos.y)
+				{
+					DataVault.camPosActual = Vector3.Lerp(DataVault.camPosActual, uCamPos, camTransTime * dTime); 								// camera
+					DataVault.camTrgtPosActual = Vector3.Lerp(DataVault.camTrgtPosActual, uCamTrgtPos, camTransTime * dTime);				// camera target
+				}
+				
+					// set the max hover dist to stay in control (like grounded)
+				hoverMaxDist = uHoverMaxDist;					
+			}
+			else if (DataVault.dnTrans)
+			{													// we're in car mode ...
+
+					// move the camera dn ..
+				if (DataVault.camPosActual.y != dCamPos.y)
+				{
+					DataVault.camPosActual = Vector3.Lerp(DataVault.camPosActual, dCamPos, camTransTime * dTime); 								// camera
+					DataVault.camTrgtPosActual = Vector3.Lerp(DataVault.camTrgtPosActual, dCamTrgtPos, camTransTime * dTime);				// camera target
+				}
+		
+					// this is run ONCE
+				if(normalMode == true)
+				{
+						// set the raycast senders to correct height
+					actHeight = transHeight;
+					
+						// Char Controller height
+					charController.center.y = actHeight;
+					shieldHeight.localPosition.y = actHeight;
+		
+						// start Transform Dn anim
+					animScript.playTransDn();				// start animation
+					animState = 8;
+					
+						// play sound
+					audio.clip = transformSound;
+					audio.Play ();
+					
+						// set the flag
+					normalMode = false;
+					planeMode = false;
+					
+						// set car stats ...
+					maxSpeed = carSpeed;
+					rotateSpeed = carRotation;
+					accRate = carAcc;
+					decRate = carDec;
+					speedPlaneSpeed = carSpeedpad;
+					offRoad = carOffroad;
+				}
+		
+		// CHANGE !!!				
+					// set the max hover dist to stay in control (like grounded)
+				hoverMaxDist = nHoverMaxDist;		// Changed here from dHoverMaxDist					
+			}
+
+		}	// end check Transforms
+		
+		// #####   END HANDLE TRANSFORMATIONS   #####
+		// ##########################################
+		// ##########################################	
+		
+	
+	
+	
+		
+//	#############################################################
+//	#####	Check if we are in control (not too high above ground)
+//
+// 	In control loop
+		
+			// if we are in control (not falling/Jumping...)
+		if ((hoverHitDist >= hoverMinDist) && (hoverHitDist <= hoverMaxDist) && (allowHover == true))
+		{													// This is problematic ... is grounded seems to NOT be stable enough - we need a broader zone defined as "grounded"... Try using a raycast instead ....
+															// we actually use the raycast from the last loop ... 
+
+			// Start normal controls code | No autopilot
+
+//	######################################################
+//	######################################################
+//			
+// #####   HANDLE ROTATION   #####
+
+				// Disable speedRotation adjust for now
+				currRotSpeed = rotateSpeed - (( moveSpeed / speedPlaneSpeed ) * speedRotationDecrease * rotateSpeed);	// change to handle boostSpeeds ...
+					
+					// make rotation not 100% same each frame .. (test - less tearing?)
+				// currRotSpeed = rotateSpeed + ((Random.value - 0.5f) * 2.0f);
+				
+					// #####   HANDLE Sliding and Rotation   #####
+					// Now we need to handle Sliding .. for now, just divert rotations from out transform to the Geometry. Add a timer later to lessen the sliding effect
+					
+					// first calculate the ammount to rotate from the input ...
+				rotateAmmount = horizInput * currRotSpeed * dTime;								// The rotation ammount from current inputs
+				turnValue = turnCharMulti * rotateAmmount;										// this is for visual feedback when turning the character.. (but only the model)
+				currRotation = 0.0f;																// will hold the current roatation below ..
+				prevSlideAngle = 0.0f;															// will hold the rotation rest below
+				
+
+					// #####   HANDLE PLANE MODE ROLL   #####
+				rollAmmount = Mathf.MoveTowards(rollAmmount, ((-rollAngle) * horizInput * 4), 100.0f * dTime);										// set the rollAmmount here based on the rollAngle set earlyer
+					
+		
+					// is the slide button pressed?
+				if (doSlide)
+				{
+		
+					slideTimer = currTime + 0.1f;															// short breaker for fluctuating input
+					
+						// store our slide goal..
+					slideGoal = 0;
+					localSlideTime = fullSlideTime;												// I want the slide to be based on input slightly:
+					
+					
+					//	###############################################
+					//
+					//	NOW! First check if we want to slide, and in which direction ...
+					
+					if(Mathf.Abs(horizInput) <= 0.1f)
+					{								// input inside deadzone ...
+							
+						if(animState == 2)
+						{		// we're sliding Right
+							slideGoal = maxSlideAngle * 0.8f;
+						}
+						else if(animState == 3)
+						{		// we're sliding Left	
+							slideGoal = -maxSlideAngle * 0.8f;
+						}
+						else
+						{		// we're not sliding in any direction
+							vertInput = 0.3f;		// no steering, no active slide .. slow down to 30 %
+							slideGoal = 0.0f;		// so our slide goal is 0
+						}
+						
+							// set the brake to active
+						brakesActive = true;
+						
+							// else change nothing ... at least for now
+					}
+					else if (horizInput > 0)
+					{								// positive input (right)
+							// set the brake flag inactive..
+						brakesActive = false;
+					
+							// we're NOT in slideLeft mode, so we can jump right into slide Right
+						if(animState != 3)
+						{
+								// are we fast enough to slide??
+							if(currSpeed >= (maxSpeed * 0.3f))
+							{
+									// set our mode flag
+								if (animState != 2)
+								{
+									animState = 2;
+									animScript.playSkateRight();
+								}
+			
+									// new SlideAngle setting
+								slideGoal = maxSlideAngle * 0.8f;
+							}
+						}
+						else if (horizInput > 0.3f)
+						{							// when we cross the treshold, move over into slideRight
+							animState = 2;
+						}
+						else 
+						{											// we're still sliding in the other direction, but haven't hit threshold ...
+							animState = 3;							// still slide left
+							slideGoal = -maxSlideAngle * 0.8f;		// still other side slideAngle
+							animScript.playSkateLeft();
+						}
+					}
+					else
+					{								// negative input (left)
+							// set the brake flag inactive..
+						brakesActive = false;
+							
+							// we're NOT in slideRight mode
+						if(animState != 2)
+						{
+						
+								// are we fast enough to slide??
+							if(currSpeed >= (maxSpeed * 0.3f))
+							{
+									// set our mode flag
+								if (animState != 3)
+								{
+									animState = 3;
+									animScript.playSkateLeft();
+								}
+		
+									// new Slide Angle setting
+								slideGoal = -maxSlideAngle * 0.8f;
+							}
+						}
+						else if (horizInput < -0.3f)
+						{							// when we cross the treshold, move over into slideLeft
+							animState = 3;
+						}
+						else 
+						{											// we're still sliding in the other direction, but haven't hit threshold ...
+							animState = 2;							// still slide right
+							slideGoal = maxSlideAngle * 0.8f;		// still other side slideAngle
+							animScript.playSkateRight();
+						}
+					}
+					
+						// add our current input into the mix! Unfortunately I have to do it before the LERP. Won't work otherwise :(
+					slideGoal += maxSlideAngle * 0.2f * horizInput;
+					
+						// Now run our actual turning code ...
+					// slideAngle = Mathf.MoveTowards(slideAngle, slideGoal, ((maxSlideAngle / fullSlideTime) * dTime) );
+					slideAngle = Mathf.Lerp(slideAngle, slideGoal, (1/fullSlideTime * dTime) );
+		
+		
+						// add our final slide bit based on actual input to the Lerped slideAngle and rotate...
+					charRoot.localEulerAngles = Vector3(0, slideAngle, 0);																	// Rotate the Character ...
+		
+		
+						// Apply our visual Offset (just to see the character turning)
+					charOffset.localEulerAngles = Vector3(0, turnValue, rollAmmount);
+								
+					
+				  		// Now add the normal controls rotation ...
+				  	rotateValue = (Vector3.up * rotateAmmount);
+					playerTrns.Rotate(rotateValue);		
+				}
+				else
+				{			// no slide button pressed...
+						// set the brake flag inactive..
+					brakesActive = false;
+				
+	//	!!!
+	//	!!!
+	//	!!!		
+					// For now add this also to our autopilot loop until I have time do think this through
+				if((DataVault.noTrans))
+				{
+					if (animState == 1)
+					{
+						animScript.playSkateSlow();
+						
+							// for safety reset the speed HUD here again
+						// HUD_Speed.changeState(7);
+						
+						animState = 99;								// means we have run playSkateSlow twice
+					}
+					
+					if((animState == 0) || (animState == 2) || (animState == 3))
+					{
+						animScript.playSkateSlow();
+						// animState = 1;
+					}
+				}		
+		
+						
+				  if (slideTimer < currTime)
+				  {													// just a buffer timer so we don't drop right out of our slide
+					if (slideAngle == 0)
+					{
+							// apply our visual offset
+						charOffset.localEulerAngles = Vector3(0, turnValue, rollAmmount);													// rotate the offset Node (Visual only)
+						
+							// get our normal rotation value and apply it
+					 	rotateValue = (Vector3.up * rotateAmmount);
+						playerTrns.Rotate(rotateValue);																						// based on angles per second ...
+					}
+					else
+					{
+								
+							// Store our current slideAngle and lerp our rotation towards 0
+						prevSlideAngle = slideAngle;																						// Store the current abs slide angle for later use
+						
+							// I'm hardcoding a speed in for the revert! It should take 0.3f seconds to revert
+						slideAngle = Mathf.MoveTowards(slideAngle, 0.0f, ((maxSlideAngle / 0.3f) * dTime));																							// get the abs value of the slide angle
+						
+							// now calc the exact ammount we have turned (needed as this will added to the transforms rotation) !!! We might want to remove or add 10% (test) easing a bit back (not entirely in facing direction)
+						currRotation = (prevSlideAngle - slideAngle);															// get the difference and apply the correct sign
+				
+							// apply the Lerped slide angle ..
+						charRoot.localEulerAngles = Vector3(0, slideAngle, 0);													// Rotate our charRoot back to 0
+						
+							// apply the offset rotation
+						charOffset.localEulerAngles = Vector3(0, turnValue, rollAmmount);													// rotate the offset Node (Visual only)
+						
+							// get the correct rotate ammound, including compensation for our slide
+						// rotateAmmount += currRotation * slideRevertDampen;																					// Add the correct rotate Value to rotate Ammount (so that we reach 0) for our character Controller	
+						rotateAmmount = currRotation * slideRevertDampen;	// revert 																						// Add the correct rotate Value to rotate Ammount (so that we reach 0) for our character Controller	
+						
+							// apply our rotation
+					 	rotateValue = (Vector3.up * rotateAmmount);
+						playerTrns.Rotate(rotateValue);												// based on angles per second ...
+						
+							// while slide not over, and not transformed .. continue calling skateSlow
+						if(DataVault.noTrans)
+						{
+							animScript.playSkateSlow();
+							animState = 0;
+						}
+					}
+				  }
+					
+				}
+		
+	
+			// ###########################################
+			//
+			// #####   HANDLE ACCELERATION / SPEED   #####
+	
+				// If we are moving forward ...			
+			if (vertInput > 0)
+			{
+						// we're gradually checking faster possible speeds and if needed increase targetspeed in one loop
+						
+						//
+						// Check if we are allowed to boost our speed in any way, if so reset the targetspeed ...
+					
+						// offRoad handling
+					offRoadMulti = 1.0f;	// set to 1 first
+					if(isOffroad)
+					{		// if in offRoad mode set Target Speed based on offRoad
+						offRoadMulti = offRoad;
+					}
+					
+						// Set the correct target Sped ...
+					targetSpeed = vertInput * maxSpeed * wpSpeedup * offRoadMulti;						// get current Target Speed ... (meaning the maximum Speed for the goven controller input)
+
+						
+						// Rear collision handling ...
+					if(backColl)
+					{																					// we were hit from behind ...
+						backColl = false;
+						currSpeed = currSpeed * backCollSpeedboost;
+						targetSpeed = targetSpeed * backCollSpeedboost;									// speedup after hit...
+					}
+		
+						// handle speedplane speed
+					if (speedPlaneExit > currTime)
+					{																										// if we ar currently in boost speed mode ...
+						targetSpeed = speedPlaneSpeed  * offRoadMulti;														// set the correct target Speed and target speed
+						HUD_Speed.playAnim = true;
+						speedState = true;
+	
+						if(speedHit)
+						{
+								// we only want to set the speed when OVER a pad. if we stop in speedpadTime just alter maxSpeed
+							currSpeed = targetSpeed;
+							speedHit = false;
+							
+								// play speed sound
+							audio.clip = speedSound;
+							audio.Play ();
+						}
+						DataVault.speedPlane = true;
+						
+							// check if we have called playSkateSlow for fast skate already
+						if (!airborne && (animState != 9) && (animState != 3) && (animState != 2) && (DataVault.noTrans))
+						{																				// if we are NOT in skateFast mode .. play skateSlow function and set value.. ONCE
+							animState = 9;
+							animScript.playSkateSlow();
+						}
+					}
+					else
+					{
+						DataVault.speedPlane = false;
+						
+							// check if our SpeedHud is still on
+						if (speedState)
+						{
+								// revert HUD
+							HUD_Speed.playAnim = false;
+							speedState = false;
+						}
+						
+							// revert to normal skate again (ONCE)
+						if (!airborne && (animState == 9))
+						{																				// if we are NOT in skateFast mode .. play skateSlow function and set value.. ONCE
+							animState = 0;
+						}
+					}
+
+						// Hyperspace Speedup!!!
+					if (hyperspace)
+					{
+						targetSpeed = speedPlaneSpeed * 1.5f;
+					}
+
+
+						// Handle the complete forward motion .....
+					if (currSpeed == targetSpeed)
+					{	
+						// if our current Speed is the target Speed do nothing
+						currSpeedAdd = 0;
+					}
+					else if (currSpeed < targetSpeed)
+					{																											// We need to accelerate ...
+						currSpeedAdd = accRate * vertInput;														// only calculate the current acceleration if needed ....
+						currSpeed += currSpeedAdd * dTime;														// Increase the current Speed ...
+						currSpeed = Mathf.Clamp(currSpeed, 0, targetSpeed);
+					} 
+					else if (currSpeed > targetSpeed)
+					{																											// we'Re too fast! Slow down ...  
+						// actSpeed = currSpeed;
+						currSpeedAdd = decRate;																		// deceleration is not dependant on the controller input as it is the slowDown Rate with NO force applied (the other would be braking, handled by negative input...)
+						currSpeed -= currSpeedAdd * dTime;
+						currSpeed = Mathf.Clamp(currSpeed, 0, (speedPlaneSpeed * wpSpeedup));
+					}
+			}
+				// only for keyboard mode
+			else 
+			{					// No input ....
+					if (currSpeed > 0)
+					{																											// we'Re too fast! Slow down ...  
+						// actSpeed = currSpeed;
+						currSpeedAdd = decRate;																		// deceleration is not dependant on the controller input as it is the slowDown Rate with NO force applied (the other would be braking, handled by negative input...)
+						currSpeed -= currSpeedAdd * dTime;
+						currSpeed = Mathf.Clamp(currSpeed, 0, (speedPlaneSpeed * wpSpeedup));
+					}
+			}
+	
+			
+			moveSpeed = currSpeed;
+			trgtDownforce = downforce * (currSpeed / speedPlaneSpeed) + idleDownforce;							// full downforce is reached at max speed ... get a ratio in relatin to currSpeed
+	
+	
+				// HANDLE GRAVITY
+				//
+				
+			// if first touchdown after Jump ... change animation and reset isJumping
+			if (airborne)
+			{
+					// Check if we had time to actually jump ...
+				if ((lastJump + 0.1f) < currTime)
+				{
+					airborne = false;							// reset the jumping flag
+					currDownforce = idleDownforce;		// first ground contact after Jump -> set init value ...
+					if (isJumping)								// if in a real Jump ... rechange anim
+					{
+							isJumping = 0;
+							animScript.playSkateSlow();			// this is run only once, so no need to check state...
+							animState = 1;
+					}
+				}
+			}
+			else if(!DataVault.upTrans)
+			{
+				currDownforce = trgtDownforce;																	// when we are on ground reset downforce to full! first cycle after Jump, we're still on ground but in airborne mode...
+			}
+			else
+			{			// we need to handle our gravity in hover mode ...
+	//!!!!!! -> AI	
+					// store the gravityComponent
+				gravComp = (trgtDownforce + gravity);
+				
+				upForce = ( hoverForce * (1 - (hoverHitDist / uHoverHeight)) );
+				lastDownforce = currDownforce;
+	
+					// apply up force for hover mode
+				currDownforce = upForce;
+				
+					// apply normal gravity ...
+				if (currDownforce > maxDownforce)
+				{											// if we are jumping ... we need to reduce the downforce back to negative values ..
+					currDownforce += gravComp * dTime;		// downforce AND gravity influence character when airborne...
+				}
+				else currDownforce = maxDownforce;
+				
+					// now smooth the value ...									transformHeightSpeed
+				currDownforce = Mathf.SmoothStep(lastDownforce, currDownforce, 10.0f * dTime);	// works nicely!! / was 10.0f
+				
+					// NOTE: I could change this .. I could make the current downforce and upForce add to each other. and have the upForce be the full strength of
+					// 		my maxDownforce for the first half of the height (would never drop below). and reduce against 0 from the second half to top height.
+					//		someting like: currDownforce += upForce * dTime (where upforce is -maxDownforce for first half, and goes against 0 for second half)
+					//		and then add grav back: currDownforce += gravComp
+					//		and I probably would have to set curr Downforce to 0 on transform (otherwise it would take some time before the upforce is bigger than downforce ..)
+			
+					// start downtransform at same time as fall now
+					
+			}
+		
+		//
+		//	#####	Check if we are in control END! Else follows ...
+		//
+		}
+		
+		
+		else
+		{		
+		//	
+		//	#####################################
+		//		No rc hit in range .. we're falling ...
+		//
+		
+				// if controller is NOT in range -> Add timer after JumpOff			.. WE'RE IN THE AIR !!!!
+				// set airborne mode to true (we've left the ground)
+	
+					// Check downforce
+				// if (currDownforce > trgtDownforce)								// this was without adding in on downforce when falling ...
+				if (currDownforce > maxDownforce)
+				{																					// if we are jumping ... we need to reduce the downforce back to negative values ..
+					// currDownforce += trgtDownforce * dTime;								// this was still using the downfrce to move down when falling. I want to ignore the downforce while in Jump mode and use my gravity instead ....
+					currDownforce += (trgtDownforce + gravity) * dTime;		// downforce AND gravity influence character when airborne...
+				}
+				else currDownforce = maxDownforce;						// if we are already at downforce .. be happy!
+		// !!!	This was trgtDownforce before | else currDownforce = maxDownforce;						// if we are already at downforce .. be happy!
+	
+				if (!airborne)
+				{																		// if this is the first after jump cycle ...
+					airborne = true;												// flag airborne mode
+				}
+	
+		}
+		
+			// Calculate actual motion
+		moveDirection = Vector3 (0, currDownforce, moveSpeed);					// get the move Direction with the forward movement ... 
+			
+			// get move direction for our character controller
+		moveDirection = playerTrns.TransformDirection(moveDirection);			// set the forward Vector correctly in world space
+						// gravityHandling removed ...moveDirection.y = moveDirection.y + verticalSpeed;						// add the vertical gravity in world Space!! || NOW! FORLOOPINGS WE NEED TO ADD A DOWNFORCE INTO THE MIX.
+	
+	
+		// prevPos = DataVault.playerPos;										// store the position before moving the player
+			
+			// move the player
+		// playerTrns.Translate(moveDirection * dTime);	
+		
+			// use CharCtl instead and get collision objects
+		charController.Move(moveDirection * dTime);
+	
+
+	// START HERE FOR GROUND CHECK
+	//
+	// ######################################
+	// ######################################
+	
+	
+	
+			// do a RaycastCheck DOWN (Track alignment ...)   -   Ray is sent from 3 units up (to compensate possibility of being inside the ground after 1 loop...)
+			// the distance is needed (50.0f).. otherwise the ray stops on the first collider, even if it is the wrong layer ...
+		if (Physics.Raycast (rayCastSender.position, playerTrns.TransformDirection (Vector3.down), hoverRayHit, 50.0f, hoverRayMask))
+		{																															// add a ray length here ..
+		
+			allowHover = true;											// set if hover allowed... (abyss only when in plane mode)
+			hoverHitDist = hoverRayHit.distance;						// store the hit distance ...
+	
+				// #####################################
+				//
+				// add abyss handling
+				
+			if (hoverRayHit.collider.CompareTag("abyss"))
+			{
+					// set flags
+				if (!overAbyss)
+				{
+					overAbyss = true;
+					DataVault.canTransform = false;
+				}
+				if(DataVault.upTrans)
+				{						// over abyss AND transformed
+					allowHover = true;
+				}
+				else
+				{						// over abyss and NOT transformed -> fall
+					allowHover = false;
+					DataVault.noTrans = true;
+					DataVault.dnTrans = false;
+					
+						// set the fall time
+					if (!abyssDrop)
+					{					// first loop dropping, set the flag
+						abyssDrop = true;
+						abyssHitTime = currTime;
+					}
+				}
+			}
+			else
+			{
+				if(overAbyss)
+				{
+					overAbyss = false;
+				 	DataVault.canTransform = true;
+				}
+			}
+	//	!!!!!!!!!!!!!!!!!
+	//
+	// Adjust smooth height change ..
+	//	
+				// check if height can be held ... (like when we are over an abyss and not in plane mode, height can't be held)
+			if (allowHover)
+			{									
+				float hoverLift;
+					// hover height handling direct raise (basically when the feet would otherwise move through the ground)
+					
+					// This works this way, as car and skate have the same minimal distance from ground .. (where the feet touch the ground ..)
+				if ((hoverHitDist) < nHoverHeight)
+				{		// Change THIS to "slide" up/down on the normal
+					
+						// adjust hover height
+					hoverLift = nHoverHeight - hoverHitDist;	// nHoverHeight was hoverHeight in other conditional
+					playerTrns.Translate(Vector3(0, hoverLift, 0));		// Move the player up the required ammount
+				}
+			}
+	
+				// add speedplane handling in ...
+			if (hoverRayHit.collider.CompareTag("speed"))
+			{
+				speedPlaneExit = currTime + speedPlaneTime;
+				speedHit = true;
+			}
+			
+				// add offRoad handling in ...
+				
+			isOffroad = false;											// set to false ...
+			if (hoverRayHit.collider.CompareTag("offRoad"))
+			{		// if offRoad, set to true
+				isOffroad = true;
+			}
+	
+				// align to ground
+			Quaternion fromRotation = playerTrns.rotation;
+			Quaternion toRotation = Quaternion.LookRotation (hoverRayHit.normal, playerTrns.TransformDirection (Vector3.forward));		// First get the correct Quaternion Orientation to the normal
+			toRotation = toRotation * Quaternion.Euler(-90, 0, 180);																									// Now change the orientation that the actual front AIMS front
+		
+			playerTrns.rotation = Quaternion.Lerp (fromRotation, toRotation, 0.1f);		// align to ground normal ...
+	
+			//	#####################################
+			//
+			//	Shadow planeCode...
+	
+				// Align the shadowplane to ground...
+			blobShadow.rotation = toRotation;
+			blobShadow.position = hoverRayHit.point;
+			if (overAbyss)
+			{
+				blobShadow.localPosition.y = blobShadow.localPosition.y - 20.0f;
+			}
+			else
+			{
+				blobShadow.localPosition.y = blobShadow.localPosition.y + .1;
+			}
+			
+			
+				// get the max width -> use for scaling the shadow ..	
+				
+				// ################################
+				//
+				// add kill handling in ...
+				
+			if (hoverRayHit.collider.CompareTag("kill"))
+			{
+				// Application.LoadLevel (0);
+				
+				// disable kill handling as I have abyss handling. ...
+	
+					// if we are falling from an abyss ... (might add a special abyss tag here)
+				killed = true;										// set killed to true					
+								
+				playerTrns.position = waypoint.position;			// position the player correctly
+				playerTrns.rotation = waypoint.rotation;
+				currSpeed = 0.0f;									// we dropped. Set our speed to 0
+				currDownforce = 0.0f;								// we were falling FAST! Reset our downforce
+				
+					// set the camera correctly
+				mainCam.position = playerTrns.TransformPoint(DataVault.camReset);
+				camTrgt.position = playerTrns.TransformPoint(DataVault.camTrgtPosActual);
+		
+
+		
+			}
+	
+			// Debug.DrawRay(hoverRayHit.point, hoverRayHit.normal, Color.red);
+			
+			// !!!
+			// !!!
+				// get our current height out (for our missle etc.)
+			publicInfo.currHeight = hoverHitDist;
+		}
+		else
+		{	
+			// #####################################
+			//
+			// if NO HIT (out of range, no control)
+			
+	
+			hoverHitDist = 0.0f;				// set to zero
+		}
+
+		
+	// END GROUND CHECK
+	//
+	// ######################################
+	// ######################################
+	
+
+	
+		
+		// DataVault.playerPos = playerTrns.position;																				// store the current position
+	
+			// position the character mesh to our transform ...
+		charMesh.position = charOffset.position;
+		charMesh.rotation = charOffset.rotation;
+	
+			// now, that the player is in the correct position, we can place the shadow under the characters ounding box center
+		Vector3 localHip = playerTrns.InverseTransformPoint(botMesh.renderer.bounds.center);
+		blobShadow.localPosition.x = localHip.x;
+		blobShadow.localPosition.z = localHip.z;
+		
+		shieldHeightVis.localPosition.y = actHeight;
+		ccHeightVis.localPosition.y = charController.center.y;
+	
+	
+		
+	// #######################################
+	//
+	// WP handling START
+	
+			// First check if we need to switch waypoints ...
+		if (switchWp)
+		{
+				// reset the switch flag ..
+			switchWp = false;
+			
+				// get next waypoint	(This will not select the wp hit, but the next one ..)
+			waypoint = wpScript.nextWp;
+
+		
+// NOT FOR PLAYER - HANDLED ABOVE			
+// !!! TEST FOR AI HANDLING WAYPOINT SWITCHING doesn't aply here as we move manually ...
+/*
+					// probability for alt waypoint + in Hyperspace NO shortcuts (auto transform not working)
+				if (Random.value >= wpScript.altProbability || hyperspace)
+				{																// 75% probability to take next waypoint, not shortcut
+					waypoint = wpScript.nextWp;
+					bestOffset = wpScript.nextOptimalOffset;					// get the next (or alt) waypoints best offset and segment width
+					nextWidth = wpScript.nextWidth;
+				}
+				else
+				{																// take the shortcut..
+					waypoint = wpScript.altWp;
+					bestOffset = wpScript.altOptimalOffset;
+					nextWidth = wpScript.altWidth;
+				}		
+*/	
+// !!! Waypoint switching done ...
+
+
+
+
+				// since we're not getting set to a definite Waypoint (alt or next) we need to make sure we're working with the correct one here..
+			// WHY VAULT? Should still be in memory ... wpScript = DataVault.hitWpScript;
+			
+				// get the segLen before switching to next wp!
+			segLen = wpScript.segLen;
+			
+				// get our aimNode before switching over
+			wpAimNode = wpScript.aimVector;
+			
+				// get the waypoints speedup setting
+			wpSpeedup = wpScript.speedAdjust;									// get the initial waypoints speed boost
+			
+				// check if we need to go into plane mode ..
+			if (wpScript.autoTransform == 1)
+			{
+					// check if we are in normal mode first ...
+				DataVault.dnTrans = false;		// Reset the flags 
+				DataVault.upTrans = true;
+				DataVault.noTrans = false;
+								
+				DataVault.transTimer = currTime + transUpTime;					// set the transformed time ...
+			}
+			else if (wpScript.autoTransform == 2)
+			{
+					// Convert this to a toggle ..not timer based ...
+				if(DataVault.dnTrans)
+				{
+						// if  in car mode .. go to car mode ...
+					DataVault.dnTrans = false;		// Reset the flags 
+					DataVault.upTrans = false;
+					DataVault.noTrans = true;
+				}
+				else
+				{
+						// if not in car mode .. go to car mode ...
+					DataVault.dnTrans = true;		// Reset the flags 
+					DataVault.upTrans = false;
+					DataVault.noTrans = false;
+				}
+			}
+			
+				// get the trackPassed to the just hit waypoint, before changing script
+			trackPassed = wpScript.trackPassed;			
+			
+				// handle lap Change .. (if we just collided with the finish line ... in the next loop the script will already be the last wps
+			if (wpScript.isStart)
+			{									// if current waypoint is finishLine ...
+				if (!lapChange)
+				{									// lap NOT changed in last loop
+					lapChange = true;
+					lapCount++;
+					HUD_currLap.changeState(lapCount);
+				}
+			}
+			else
+			{									// if not, just set our flag back to false
+				lapChange = false;
+			}
+			
+
+				// check if race is over
+			if (lapCount == (raceLaps + 1))
+			{
+				DataVault.raceOver = true;
+				DataVault.gameEnabled = false;
+				
+					// at the end of the raceenable the auto pilot
+				autoPilot = true;
+			}
+			
+				// get our reset settings
+			abyssRespawn = wpScript.dropRespawn;
+			abyssStopTime = wpScript.dropTimer;										// time till slow mode
+			abyssSlowTime =	abyssStopTime + 1.5f;									// time we are slow after reset ...
+			
+				// get the airTime stored in the current waypoint
+			transUpTime = wpScript.airTimer;
+			aiWpMulti = wpScript.aiMulti;
+			wpTurnMulti = wpScript.wpTurnMulti;
+					
+				// handle our Offset and get the wpPos for this segment .. based on best offset
+			// float aiAccurracy = 1;		// how accurate is the AI with setting their waypoint? 0 is full accuracy, 1 is up to 0.5f * segWidth off, depending on random value
+			// float wpClamp = 0.5f;
+				
+				// for now clamp our offset between 0.5f and -0.5f
+//			float segOffset = Mathf.Clamp((bestOffset + ((Random.value - 0.5f) * aiAccurracy * aiWpMulti)), -wpClamp, wpClamp);
+//				print("SegOffset: " + segOffset + " for Index : " + botIndex);
+//			wpPos = (waypoint.TransformDirection(Vector3((segOffset * nextWidth), 0, 25.0f)) + waypoint.position);
+
+				// player just follows the middle ...
+			wpPos = (waypoint.TransformDirection(Vector3(0, 0, 25.0f)) + waypoint.position);
+
+				// get the airTime stored in the current waypoint
+			transUpTime = wpScript.airTimer;
+			aiWpMulti = wpScript.aiMulti;
+		
+		}	
+	
+			// NOW: unified dist handling - player (and AI) pos is projected on a point along the direct line between 2 wayponts (no more rounding at end)
+			// get player position in aimNode space
+		wpDistPos = wpAimNode.InverseTransformPoint(playerTrns.position);
+	
+			// Now get the new distance (only the z value of the player position ...)
+		wpDist = wpDistPos.z;
+		
+
+//	############################################
+//
+//		Add weapon decision handling
+
+		
+				
+//		End Weapon decision handling
+//
+//	#############################################		
+		
+		
+		
+	
+// !!!	This is for player only ...
+// !!!
+			// get the theoretical wpOffset of our player!!! (for missle deployment)
+		publicInfo.wpOffset = wpDistPos.x / wpScript.segmentWidth;
+
+			// and get our track progress
+		tProgress = (trackPassed + wpDist) + trackLen * (lapCount-1);
+				
+			// store player lapCount in Vault
+		DataVault.pLap = lapCount;
+
+// wp handling END
+// 	###############################	
+//	###############################
+//	###############################
+
+	}	//End game enabled check ...
+}
+
+
+
+	// handle actual collisions... convert to rigidbody
+void  OnControllerColliderHit ( ControllerColliderHit hit  ){
+
+// Maybe check if another player was hit, and send speedup signal to him?
+// This is not triggered here, because the function is only called when we move into something, not if someone moves into us ... 
+//
+
+	if(hit.collider.CompareTag("Player"))
+	{
+		// don't turn if we hit a player ...
+		
+			// slow down
+		currSpeed = currSpeed * 0.95f;
+	}
+	else
+	{
+
+			// Handle normal collisions!!
+			//
+			//	Thoughts:
+			//		get the hit.point and calc it's x and z coordinates in player space. Then calculate the correct dist and dir to move to...
+			//  	basically as the controller always hits with his bound, moving back like 0.1f units should be enough.
+			//
+			
+			
+			//	######################################################################################
+			//
+			// Step 1: Get the hitPoint in local Player space (and as Vector2 -> only x,z position)
+		
+		Vector3 hitPoint3D;
+		Vector2 hitPoint2D;
+		float hitAngle;
+		
+			// get our hit point
+		hitPoint3D = playerTrns.InverseTransformPoint(hit.point);
+			
+			//restrict our point to local 2D space only (with collisions, we're not concerned with height)
+		hitPoint2D.x = hitPoint3D.x;
+		hitPoint2D.y = hitPoint3D.z;	// as y is height in 3d... (we're using Vector2 as I think calculations are faster on them than on Vector3)
+			
+		
+			//	######################################################################################
+			//
+			// Step 2: Handle the rotation
+		
+			// if we are hit from behind .. no turning is needed ... (as we are already facing away from our collider)
+		if(hitPoint2D.y < 0)
+		{
+				// set the hit from behind flag to speed up
+			backColl = true;
+		}
+		else
+		{										// we're hit front and need to turn away ..
+				
+				// get our hit angle (between forward and hit point)
+			hitAngle = Vector2.Angle(Vector2.up, hitPoint2D);
+			
+				// now convert it into an angle we need to rotate (if we are hitting 90 deg to sode, almost no rotation is neededn, if we hit 0 deg, we need to rotate 90 deg as we just hit frontal ...)
+			hitAngle = (90.0f - hitAngle) + 5.0f;			// 5.0f is a little extra so that we DO rotate away!!
+			
+			
+				// now check if we need to rotate left or right (Vector2.Angle is always positive, so check which side of our player the collision is...)
+			if(hitPoint2D.x >= 0)
+			{									// right side collision | requires negative counter rotation ...
+					// negate 
+				hitAngle = -hitAngle;
+			}			
+				// now get the correct value based on time (we do have a max turn speed for reverting )
+				// for now I won't include the time in this loop. Simply because THIS function didn't get out pTime and dTime info.
+				// I know that on collision this will be called by fixedUpdate anyway, so I just specify angles per loop ... we have 30 loops per second, so make the turn max take 3 to 5 loops
+			
+				// calculate our rotation angle ..
+			hitAngle = Mathf.MoveTowardsAngle(0.0f, hitAngle, collisionTurnSpeed);
+				// now finally rotate our player
+			playerTrns.Rotate(Vector3(0, hitAngle,0));
+			
+				// Step 3: reduce speed ...
+			currSpeed = currSpeed * collisionSpeedDecrease;				// decrease Speed per hit
+		
+		}
+	}
+
+
+
+}
+
+
+	// handle triggering
+void  OnTriggerEnter ( Collider hit  ){
+
+	// organize collisions by their probability .. waypoints first, pickups next, jumpgate, normal collision
+	switch (true)
+	{
+		case (hit.collider.CompareTag("waypoint")):
+
+					// Handle Waypoint hit
+				FIXME_VAR_TYPE tempWpHit= (hit.collider.GetComponent<wpAttribs>() as wpAttribs);
+				
+				if (lastWpIndex != tempWpHit.waypointIndex)
+				{
+					// WHY DATA VAULT AND NOT LOCAL??? DataVault.hitWpScript = tempWpHit;
+					wpScript = tempWpHit;
+					lastWpIndex = wpScript.waypointIndex;
+					switchWp = true;
+					
+					// do the waypoint switching directly here ...
+				}
+			break;			
+		
+		case (hit.collider.CompareTag("pickup")):
+
+					// Handle Pickup
+				hit.collider.gameObject.SendMessage("collectPickup");
+			
+					// run the pickup code here -> directly implement stuff only support random pickups for now.
+				handlePickup();
+			break;
+			
+		case (hit.collider.CompareTag("jumpGate")):
+
+					// set the jumpGate flag
+				hitJumpGate = true;
+				longJump = true;			// are we in a long jump?
+			break;
+			
+		case (hit.collider.CompareTag("mineIsotope")):
+				
+					// if shield enabled .. disable .. no effect
+				if (shieldEnable)
+				{
+					shieldEnable = false;
+				}
+				else
+				{
+					isotopeHit = true;
+					mineHit = true;
+				}
+			break;
+			
+		case (hit.collider.CompareTag("mineBada")):
+			
+					// if shield enabled .. disable .. no effect
+				if (shieldEnable)
+				{
+					shieldEnable = false;
+				}
+				else
+				{
+					badaboomHit = true;
+					mineHit = true;
+				}
+			break;
+			
+		case (hit.collider.CompareTag("missle")):
+			
+					// if shield enabled .. disable .. no effect
+				if(!isJumping)
+				{
+					missleImpact();
+				}
+			break;
+	}
+
+}
+
+}

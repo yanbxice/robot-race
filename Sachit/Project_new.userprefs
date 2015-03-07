@@ -1,0 +1,17 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/UI/fps.js">
+    <Files>
+      <File FileName="Assets/Scripts/Player/pInput.js" Line="165" Column="18" />
+      <File FileName="Assets/Scripts/Level/initLevel.js" Line="529" Column="2" />
+      <File FileName="Assets/Scripts/mainMenu/play_btn.js" Line="35" Column="5" />
+      <File FileName="Assets/Scripts/mainMenu/playBack_btn.js" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Level/DataVault.js" Line="61" Column="26" />
+      <File FileName="Assets/Scripts/UI/fps.js" Line="70" Column="70" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

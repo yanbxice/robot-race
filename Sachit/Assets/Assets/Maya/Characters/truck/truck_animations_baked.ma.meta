@@ -1,0 +1,455 @@
+fileFormatVersion: 2
+guid: eceeb0bd854af6744a0d6a6ae5f8d68f
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: Van_mesh
+    7400000: Take 001 //// truck_animations_baked
+    7400002: Skate_Slow //// truck_animations_baked
+    7400004: Skate_Fast //// truck_animations_baked
+    7400006: Stand_Idle //// truck_animations_baked
+    7400008: Skate_Idle //// truck_animations_baked
+    7400010: Jump_Over //// truck_animations_baked
+    7400012: Grind_Idle //// truck_animations_baked
+    7400014: Attack //// truck_animations_baked
+    7400016: Idle2Plane //// truck_animations_baked
+    7400018: PlaneIdle //// truck_animations_baked
+    7400020: Plane2Idle //// truck_animations_baked
+    7400022: Idle2Car //// truck_animations_baked
+    7400024: CarIdle //// truck_animations_baked
+    7400026: Car2Idle //// truck_animations_baked
+    7400028: GetReady //// truck_animations_baked
+    7400030: CarLeft //// truck_animations_baked
+    7400032: CarRight //// truck_animations_baked
+    7400034: PlaneLeft //// truck_animations_baked
+    7400036: PlaneRight //// truck_animations_baked
+    7400038: skateLeft //// truck_animations_baked
+    7400040: skateRight //// truck_animations_baked
+    7400042: Wreck //// truck_animations_baked
+    7400044: Damage //// truck_animations_baked
+    7400046: Win //// truck_animations_baked
+    7400048: ChosePlayer //// truck_animations_baked
+    7400050: TitleAnims //// truck_animations_baked
+    7400052: planehit //// truck_animations_baked
+    7400054: carhit //// truck_animations_baked
+    7400056: LowTurnLeft //// truck_animations_baked
+    7400058: LowTurnRight //// truck_animations_baked
+    7400060: planehit //// truck_animations_baked
+    7400062: readyIdle //// truck_animations_baked
+    7400064: JumpFloat //// truck_animations_baked
+    7400066: JumpLand //// truck_animations_baked
+    7400068: WinLoop //// truck_animations_baked
+    100100000: DataTemplate __Singleton__
+  serializedVersion: 10
+  materials:
+    importMaterials: 1
+    materialName: 3
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 2
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations:
+    - name: Skate_Slow
+      firstFrame: 1
+      lastFrame: 30
+      wrapMode: 2
+      loop: 1
+    - name: Skate_Fast
+      firstFrame: 100
+      lastFrame: 130
+      wrapMode: 2
+      loop: 1
+    - name: Stand_Idle
+      firstFrame: 200
+      lastFrame: 230
+      wrapMode: 2
+      loop: 1
+    - name: Jump_Over
+      firstFrame: 400
+      lastFrame: 421
+      wrapMode: 0
+      loop: 0
+    - name: JumpFloat
+      firstFrame: 422
+      lastFrame: 441
+      wrapMode: 2
+      loop: 1
+    - name: Attack
+      firstFrame: 600
+      lastFrame: 630
+      wrapMode: 0
+      loop: 0
+    - name: Idle2Plane
+      firstFrame: 960
+      lastFrame: 990
+      wrapMode: 0
+      loop: 0
+    - name: PlaneIdle
+      firstFrame: 800
+      lastFrame: 830
+      wrapMode: 2
+      loop: 1
+    - name: Plane2Idle
+      firstFrame: 900
+      lastFrame: 930
+      wrapMode: 0
+      loop: 0
+    - name: Idle2Car
+      firstFrame: 1000
+      lastFrame: 1030
+      wrapMode: 0
+      loop: 0
+    - name: CarIdle
+      firstFrame: 1100
+      lastFrame: 1130
+      wrapMode: 2
+      loop: 1
+    - name: Car2Idle
+      firstFrame: 1200
+      lastFrame: 1230
+      wrapMode: 0
+      loop: 0
+    - name: GetReady
+      firstFrame: 3200
+      lastFrame: 3400
+      wrapMode: 0
+      loop: 0
+    - name: JumpLand
+      firstFrame: 442
+      lastFrame: 450
+      wrapMode: 0
+      loop: 0
+    - name: readyIdle
+      firstFrame: 3390
+      lastFrame: 3400
+      wrapMode: 4
+      loop: 1
+    - name: skateLeft
+      firstFrame: 1700
+      lastFrame: 1730
+      wrapMode: 0
+      loop: 0
+    - name: planehit
+      firstFrame: 4000
+      lastFrame: 4030
+      wrapMode: 0
+      loop: 0
+    - name: skateRight
+      firstFrame: 1600
+      lastFrame: 1630
+      wrapMode: 0
+      loop: 0
+    - name: Damage
+      firstFrame: 1900
+      lastFrame: 1930
+      wrapMode: 0
+      loop: 0
+    - name: Win
+      firstFrame: 2000
+      lastFrame: 2120
+      wrapMode: 0
+      loop: 0
+    - name: planehit
+      firstFrame: 4000
+      lastFrame: 4030
+      wrapMode: 0
+      loop: 0
+    - name: carhit
+      firstFrame: 4100
+      lastFrame: 4130
+      wrapMode: 0
+      loop: 0
+    - name: WinLoop
+      firstFrame: 2120
+      lastFrame: 2160
+      wrapMode: 2
+      loop: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .0149999997
+    meshCompression: 3
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: b6860100
+      data:
+        first: 4
+        second: 961a0600
+      data:
+        first: 111
+        second: 605fa900
+    Van_Joint_Chest:
+      data:
+        first: 1
+        second: e0860100
+      data:
+        first: 4
+        second: c01a0600
+    Van_Joint_Head:
+      data:
+        first: 1
+        second: dc860100
+      data:
+        first: 4
+        second: bc1a0600
+    Van_Joint_Head_End:
+      data:
+        first: 1
+        second: be860100
+      data:
+        first: 4
+        second: 9e1a0600
+    Van_Joint_Hip:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+    Van_Joint_L_Ankle:
+      data:
+        first: 1
+        second: d2860100
+      data:
+        first: 4
+        second: b21a0600
+    Van_Joint_L_Arm:
+      data:
+        first: 1
+        second: da860100
+      data:
+        first: 4
+        second: ba1a0600
+    Van_Joint_L_Elbow:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
+    Van_Joint_L_Forearm:
+      data:
+        first: 1
+        second: b8860100
+      data:
+        first: 4
+        second: 981a0600
+    Van_Joint_L_Index1:
+      data:
+        first: 1
+        second: b4860100
+      data:
+        first: 4
+        second: 941a0600
+    Van_Joint_L_Index2:
+      data:
+        first: 1
+        second: ba860100
+      data:
+        first: 4
+        second: 9a1a0600
+    Van_Joint_L_Index3:
+      data:
+        first: 1
+        second: bc860100
+      data:
+        first: 4
+        second: 9c1a0600
+    Van_Joint_L_Index_tip:
+      data:
+        first: 1
+        second: c0860100
+      data:
+        first: 4
+        second: a01a0600
+    Van_Joint_L_Knee:
+      data:
+        first: 1
+        second: d4860100
+      data:
+        first: 4
+        second: b41a0600
+    Van_Joint_L_Leg:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+    Van_Joint_L_Shoulder:
+      data:
+        first: 1
+        second: b2860100
+      data:
+        first: 4
+        second: 921a0600
+    Van_Joint_L_Toe:
+      data:
+        first: 1
+        second: ca860100
+      data:
+        first: 4
+        second: aa1a0600
+    Van_Joint_L_Wrist:
+      data:
+        first: 1
+        second: c8860100
+      data:
+        first: 4
+        second: a81a0600
+    Van_Joint_Mid_Chest:
+      data:
+        first: 1
+        second: c4860100
+      data:
+        first: 4
+        second: a41a0600
+    Van_Joint_Neck1:
+      data:
+        first: 1
+        second: de860100
+      data:
+        first: 4
+        second: be1a0600
+    Van_Joint_R_Ankle:
+      data:
+        first: 1
+        second: ce860100
+      data:
+        first: 4
+        second: ae1a0600
+    Van_Joint_R_Arm:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+    Van_Joint_R_Elbow:
+      data:
+        first: 1
+        second: d6860100
+      data:
+        first: 4
+        second: b61a0600
+    Van_Joint_R_Forearm:
+      data:
+        first: 1
+        second: d0860100
+      data:
+        first: 4
+        second: b01a0600
+    Van_Joint_R_Index1:
+      data:
+        first: 1
+        second: c2860100
+      data:
+        first: 4
+        second: a21a0600
+    Van_Joint_R_Index2:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+    Van_Joint_R_Index3:
+      data:
+        first: 1
+        second: c6860100
+      data:
+        first: 4
+        second: a61a0600
+    Van_Joint_R_Index_tip:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+    Van_Joint_R_Knee:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+    Van_Joint_R_Leg:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
+    Van_Joint_R_Shoulder:
+      data:
+        first: 1
+        second: cc860100
+      data:
+        first: 4
+        second: ac1a0600
+    Van_Joint_R_Toe:
+      data:
+        first: 1
+        second: d8860100
+      data:
+        first: 4
+        second: b81a0600
+    Van_Joint_R_Wrist:
+      data:
+        first: 1
+        second: ae860100
+      data:
+        first: 4
+        second: 8e1a0600
+    Van_Joint_Root:
+      data:
+        first: 1
+        second: e4860100
+      data:
+        first: 4
+        second: c41a0600
+    Van_Joint_Waist:
+      data:
+        first: 1
+        second: e2860100
+      data:
+        first: 4
+        second: c21a0600
+    Van_Skeleton:
+      data:
+        first: 1
+        second: e8860100
+      data:
+        first: 4
+        second: c81a0600
+      data:
+        first: 137
+        second: a00bd100
+    Van_mesh:
+      data:
+        first: 1
+        second: e6860100
+      data:
+        first: 4
+        second: c61a0600

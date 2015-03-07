@@ -1,0 +1,519 @@
+fileFormatVersion: 2
+guid: 61331f4ad7062da4cb787fec121b5e2f
+ModelImporter:
+  fileIDToRecycleName:
+    4300000: steamballMesh
+    7400000: Take 001 //// steamball_animations_baked
+    7400002: Skate_Slow //// steamball_animations_baked
+    7400004: idle //// steamball_animations_baked
+    7400006: Skate_Fast //// steamball_animations_baked
+    7400008: Stand_Idle //// steamball_animations_baked
+    7400010: Skate_Idle //// steamball_animations_baked
+    7400012: Jump_Over //// steamball_animations_baked
+    7400014: skateLeft //// steamball_animations_baked
+    7400016: skateRight //// steamball_animations_baked
+    7400018: Grind_Idle //// steamball_animations_baked
+    7400020: Attack //// steamball_animations_baked
+    7400022: Idle2Plane //// steamball_animations_baked
+    7400024: PlaneIdle //// steamball_animations_baked
+    7400026: Plane2Idle //// steamball_animations_baked
+    7400028: Idle2Car //// steamball_animations_baked
+    7400030: CarIdle //// steamball_animations_baked
+    7400032: Car2Idle //// steamball_animations_baked
+    7400034: GetReady //// steamball_animations_baked
+    7400036: CarLeft //// steamball_animations_baked
+    7400038: CarRight //// steamball_animations_baked
+    7400040: PlaneLeft //// steamball_animations_baked
+    7400042: PlaneRight //// steamball_animations_baked
+    7400044: Wreck //// steamball_animations_baked
+    7400046: Damage //// steamball_animations_baked
+    7400048: Win //// steamball_animations_baked
+    7400050: ChosePlayer //// steamball_animations_baked
+    7400052: carhit //// steamball_animations_baked
+    7400054: LowTurnLeft //// steamball_animations_baked
+    7400056: LowTurnRight //// steamball_animations_baked
+    7400058: planehit //// steamball_animations_baked
+    7400060: readyIdle //// steamball_animations_baked
+    7400062: JumpFloat //// steamball_animations_baked
+    7400064: JumpLand //// steamball_animations_baked
+    7400066: WinLoop //// steamball_animations_baked
+    100100000: DataTemplate __Singleton__
+  serializedVersion: 10
+  materials:
+    importMaterials: 1
+    materialName: 3
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 2
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations:
+    - name: Skate_Slow
+      firstFrame: 1
+      lastFrame: 30
+      wrapMode: 2
+      loop: 1
+    - name: Skate_Fast
+      firstFrame: 100
+      lastFrame: 130
+      wrapMode: 2
+      loop: 1
+    - name: Stand_Idle
+      firstFrame: 200
+      lastFrame: 230
+      wrapMode: 2
+      loop: 1
+    - name: Jump_Over
+      firstFrame: 400
+      lastFrame: 423
+      wrapMode: 0
+      loop: 0
+    - name: skateLeft
+      firstFrame: 2000
+      lastFrame: 2030
+      wrapMode: 2
+      loop: 1
+    - name: skateRight
+      firstFrame: 2100
+      lastFrame: 2130
+      wrapMode: 2
+      loop: 1
+    - name: readyIdle
+      firstFrame: 1490
+      lastFrame: 1500
+      wrapMode: 4
+      loop: 1
+    - name: Attack
+      firstFrame: 600
+      lastFrame: 630
+      wrapMode: 0
+      loop: 0
+    - name: Idle2Plane
+      firstFrame: 700
+      lastFrame: 730
+      wrapMode: 0
+      loop: 0
+    - name: PlaneIdle
+      firstFrame: 800
+      lastFrame: 830
+      wrapMode: 2
+      loop: 1
+    - name: Plane2Idle
+      firstFrame: 900
+      lastFrame: 930
+      wrapMode: 0
+      loop: 0
+    - name: Idle2Car
+      firstFrame: 1000
+      lastFrame: 1030
+      wrapMode: 0
+      loop: 0
+    - name: CarIdle
+      firstFrame: 1100
+      lastFrame: 1130
+      wrapMode: 2
+      loop: 1
+    - name: Car2Idle
+      firstFrame: 1200
+      lastFrame: 1230
+      wrapMode: 0
+      loop: 0
+    - name: GetReady
+      firstFrame: 1300
+      lastFrame: 1500
+      wrapMode: 0
+      loop: 0
+    - name: JumpFloat
+      firstFrame: 424
+      lastFrame: 443
+      wrapMode: 2
+      loop: 1
+    - name: JumpLand
+      firstFrame: 444
+      lastFrame: 450
+      wrapMode: 0
+      loop: 0
+    - name: planehit
+      firstFrame: 2700
+      lastFrame: 2730
+      wrapMode: 0
+      loop: 0
+    - name: Damage
+      firstFrame: 2300
+      lastFrame: 2330
+      wrapMode: 0
+      loop: 0
+    - name: Win
+      firstFrame: 2400
+      lastFrame: 2520
+      wrapMode: 0
+      loop: 0
+    - name: carhit
+      firstFrame: 2800
+      lastFrame: 2830
+      wrapMode: 0
+      loop: 0
+    - name: WinLoop
+      firstFrame: 2520
+      lastFrame: 2560
+      wrapMode: 2
+      loop: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .0149999997
+    meshCompression: 3
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+      data:
+        first: 111
+        second: 605fa900
+    steamballMesh:
+      data:
+        first: 1
+        second: fc860100
+      data:
+        first: 4
+        second: dc1a0600
+    steamball_Joint_Chest:
+      data:
+        first: 1
+        second: c4860100
+      data:
+        first: 4
+        second: a41a0600
+    steamball_Joint_Chin:
+      data:
+        first: 1
+        second: ba860100
+      data:
+        first: 4
+        second: 9a1a0600
+    steamball_Joint_Head:
+      data:
+        first: 1
+        second: b6860100
+      data:
+        first: 4
+        second: 961a0600
+    steamball_Joint_Head_End:
+      data:
+        first: 1
+        second: cc860100
+      data:
+        first: 4
+        second: ac1a0600
+    steamball_Joint_Hip:
+      data:
+        first: 1
+        second: e2860100
+      data:
+        first: 4
+        second: c21a0600
+    steamball_Joint_Jaw:
+      data:
+        first: 1
+        second: b8860100
+      data:
+        first: 4
+        second: 981a0600
+    steamball_Joint_L_Ankle:
+      data:
+        first: 1
+        second: ea860100
+      data:
+        first: 4
+        second: ca1a0600
+    steamball_Joint_L_Arm:
+      data:
+        first: 1
+        second: a8860100
+      data:
+        first: 4
+        second: 881a0600
+    steamball_Joint_L_Elbow:
+      data:
+        first: 1
+        second: a6860100
+      data:
+        first: 4
+        second: 861a0600
+    steamball_Joint_L_Forearm:
+      data:
+        first: 1
+        second: be860100
+      data:
+        first: 4
+        second: 9e1a0600
+    steamball_Joint_L_Index1:
+      data:
+        first: 1
+        second: c2860100
+      data:
+        first: 4
+        second: a21a0600
+    steamball_Joint_L_Index2:
+      data:
+        first: 1
+        second: c6860100
+      data:
+        first: 4
+        second: a61a0600
+    steamball_Joint_L_Index3:
+      data:
+        first: 1
+        second: c8860100
+      data:
+        first: 4
+        second: a81a0600
+    steamball_Joint_L_Knee:
+      data:
+        first: 1
+        second: ac860100
+      data:
+        first: 4
+        second: 8c1a0600
+    steamball_Joint_L_Leg:
+      data:
+        first: 1
+        second: e4860100
+      data:
+        first: 4
+        second: c41a0600
+    steamball_Joint_L_Middle1:
+      data:
+        first: 1
+        second: ca860100
+      data:
+        first: 4
+        second: aa1a0600
+    steamball_Joint_L_Middle2:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600
+    steamball_Joint_L_Middle3:
+      data:
+        first: 1
+        second: f0860100
+      data:
+        first: 4
+        second: d01a0600
+    steamball_Joint_L_Shoulder:
+      data:
+        first: 1
+        second: bc860100
+      data:
+        first: 4
+        second: 9c1a0600
+    steamball_Joint_L_Thumb1:
+      data:
+        first: 1
+        second: f2860100
+      data:
+        first: 4
+        second: d21a0600
+    steamball_Joint_L_Thumb2:
+      data:
+        first: 1
+        second: de860100
+      data:
+        first: 4
+        second: be1a0600
+    steamball_Joint_L_Toe:
+      data:
+        first: 1
+        second: b2860100
+      data:
+        first: 4
+        second: 921a0600
+    steamball_Joint_L_Wrist:
+      data:
+        first: 1
+        second: c0860100
+      data:
+        first: 4
+        second: a01a0600
+    steamball_Joint_Mid_Chest:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+    steamball_Joint_Neck1:
+      data:
+        first: 1
+        second: b4860100
+      data:
+        first: 4
+        second: 941a0600
+    steamball_Joint_R_Ankle:
+      data:
+        first: 1
+        second: e8860100
+      data:
+        first: 4
+        second: c81a0600
+    steamball_Joint_R_Arm:
+      data:
+        first: 1
+        second: ce860100
+      data:
+        first: 4
+        second: ae1a0600
+    steamball_Joint_R_Elbow:
+      data:
+        first: 1
+        second: d0860100
+      data:
+        first: 4
+        second: b01a0600
+    steamball_Joint_R_Forearm:
+      data:
+        first: 1
+        second: e6860100
+      data:
+        first: 4
+        second: c61a0600
+    steamball_Joint_R_Index1:
+      data:
+        first: 1
+        second: d4860100
+      data:
+        first: 4
+        second: b41a0600
+    steamball_Joint_R_Index2:
+      data:
+        first: 1
+        second: d6860100
+      data:
+        first: 4
+        second: b61a0600
+    steamball_Joint_R_Index3:
+      data:
+        first: 1
+        second: b0860100
+      data:
+        first: 4
+        second: 901a0600
+    steamball_Joint_R_Knee:
+      data:
+        first: 1
+        second: ee860100
+      data:
+        first: 4
+        second: ce1a0600
+    steamball_Joint_R_Leg:
+      data:
+        first: 1
+        second: ec860100
+      data:
+        first: 4
+        second: cc1a0600
+    steamball_Joint_R_Middle1:
+      data:
+        first: 1
+        second: ae860100
+      data:
+        first: 4
+        second: 8e1a0600
+    steamball_Joint_R_Middle2:
+      data:
+        first: 1
+        second: d8860100
+      data:
+        first: 4
+        second: b81a0600
+    steamball_Joint_R_Middle3:
+      data:
+        first: 1
+        second: da860100
+      data:
+        first: 4
+        second: ba1a0600
+    steamball_Joint_R_Shoulder:
+      data:
+        first: 1
+        second: aa860100
+      data:
+        first: 4
+        second: 8a1a0600
+    steamball_Joint_R_Thumb1:
+      data:
+        first: 1
+        second: dc860100
+      data:
+        first: 4
+        second: bc1a0600
+    steamball_Joint_R_Thumb2:
+      data:
+        first: 1
+        second: e0860100
+      data:
+        first: 4
+        second: c01a0600
+    steamball_Joint_R_Toe:
+      data:
+        first: 1
+        second: f4860100
+      data:
+        first: 4
+        second: d41a0600
+    steamball_Joint_R_Wrist:
+      data:
+        first: 1
+        second: d2860100
+      data:
+        first: 4
+        second: b21a0600
+    steamball_Joint_Root:
+      data:
+        first: 1
+        second: f6860100
+      data:
+        first: 4
+        second: d61a0600
+      data:
+        first: 137
+        second: a00bd100
+    steamball_Joint_Waist:
+      data:
+        first: 1
+        second: f8860100
+      data:
+        first: 4
+        second: d81a0600
+    steamball_Skeleton:
+      data:
+        first: 1
+        second: fa860100
+      data:
+        first: 4
+        second: da1a0600

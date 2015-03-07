@@ -1,0 +1,94 @@
+fileFormatVersion: 2
+guid: 9bea6c6df1d58c64caf4e1f54d715b41
+ModelImporter:
+  fileIDToRecycleName:
+    7400000: Take 001 //// camSpeed
+    7400002: speedStill //// camSpeed
+    7400004: speedSlow //// camSpeed
+    7400006: speedFast //// camSpeed
+    7400008: speedNormal //// camSpeed
+    7400010: speedDown //// camSpeed
+    100100000: DataTemplate __Singleton__
+  serializedVersion: 10
+  materials:
+    importMaterials: 1
+    materialName: 3
+    materialSearch: 1
+  animations:
+    generateAnimations: 3
+    bakeSimulation: 0
+    splitAnimations: 1
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    clipAnimations:
+    - name: speedStill
+      firstFrame: 1
+      lastFrame: 2
+      wrapMode: 0
+      loop: 0
+    - name: speedSlow
+      firstFrame: 2
+      lastFrame: 36
+      wrapMode: 0
+      loop: 0
+    - name: speedFast
+      firstFrame: 37
+      lastFrame: 77
+      wrapMode: 0
+      loop: 0
+    - name: speedNormal
+      firstFrame: 78
+      lastFrame: 95
+      wrapMode: 0
+      loop: 0
+    - name: speedDown
+      firstFrame: 96
+      lastFrame: 120
+      wrapMode: 0
+      loop: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMesh: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  textMetaNamesToFileIDs:
+    //RootNode:
+      data:
+        first: 1
+        second: a2860100
+      data:
+        first: 4
+        second: 821a0600
+      data:
+        first: 111
+        second: 605fa900
+    camSpeed:
+      data:
+        first: 1
+        second: a0860100
+      data:
+        first: 4
+        second: 801a0600
+    camSpeed_root:
+      data:
+        first: 1
+        second: a4860100
+      data:
+        first: 4
+        second: 841a0600

@@ -1,0 +1,74 @@
+// Single Race Button handling
+
+var inputScript : pInput;						// the animation node (CamAnim)
+var buttonScript : HUD_SingleButton;			// race type selector
+var isOver : boolean = false;					// here isOver is used to check if music state is already changed
+var index : int = 1;
+// var value : float = 0.5;
+
+function Start()
+{
+		// get our settings holder
+	var playerConstruct = GameObject.Find("Player_Construct");
+	inputScript = (playerConstruct.GetComponent(pInput) as pInput); 
+	
+		// get our button script
+	buttonScript = (transform.GetComponent(HUD_SingleButton) as HUD_SingleButton); 
+	
+	
+		// init our isOver Value and change the state
+	if(DataTransfer.accSensIndex >= index)
+	{
+			// if we are below our current sensIndex ... enable it
+		isOver = true;
+		buttonScript.changeState(1);
+	}
+	else
+	{
+		isOver = false;
+		buttonScript.changeState(0);
+	}
+}
+
+	// execute Button function
+function execute () 
+{
+		// inactivate the button
+	// buttonScript.changeState(1);
+
+		// set the correct index
+	DataTransfer.accSensIndex = index;
+	
+		// run the sens script
+	inputScript.setAccSens();
+}
+
+function over()
+{
+		// set value while even sliding over
+	DataTransfer.accSensIndex = index;
+	
+		// run the sens script
+	inputScript.setAccSens();
+}
+
+function Update()
+{
+		// check if music is on (and adjust button for it)
+	if(DataTransfer.accSensIndex >= index)
+	{
+			// check if we still need to switch button state
+		if (!isOver)
+		{
+			buttonScript.changeState(1);
+			isOver = true;
+		}
+	}
+	else if (isOver)
+	{
+			// check if we still need to switch button state
+		buttonScript.changeState(0);
+		isOver = false;
+	}
+}
+
